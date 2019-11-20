@@ -1,0 +1,37 @@
+{
+  "instructions": [
+    {
+      "instruction" : "W_Slave_Reset",
+      "ready bound": 1
+    },
+    
+    {
+      "instruction" : "AW_Slave_Commit",
+      "ready bound": 1
+    },
+
+    {
+      "instruction" : "W_Slave_Wait",
+      "ready bound": 1
+    },
+
+    {
+      "instruction" : "W_Slave_Busy",
+      "ready bound": 1
+    },
+
+    {
+      "instruction" : "B_Slave_Commit",
+      "ready bound": 1
+    },   
+
+    {
+      "instruction" : "AW_Slave_Wait",
+      "ready bound": 1
+    } 
+  ],
+  
+  "global invariants": []
+
+}
+
