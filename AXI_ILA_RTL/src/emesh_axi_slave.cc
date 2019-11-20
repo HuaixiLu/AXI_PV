@@ -221,6 +221,9 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
     instr.SetDecode((s_axi_aresetn_r == 1) & (tx_ractive == 1) & (s_axi_rvalid == 0) );
     // Data Valid
     instr.SetUpdate(s_axi_rvalid, Ite(unknownVal(1) == 1, BvConst(1,1), s_axi_rvalid));
+    auto data = Ite(Extract(tx_arsize,1,0) == 0, Concat(Concat(unknownVal(8),unknownVal(8)), Concat(unknownVal(8),unknownVal(8))),
+                Ite(Extract(tx_arsize,1,0) == 1, Concat(unknownVal(16),unknownVal(16)), unknownVal(32)));
+    instr.SetUpdate(s_axi_rdata, Ite(unknownVal(1) == 1, data, s_axi_rdata));
 
   }
 
@@ -234,11 +237,6 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
     instr.SetUpdate(s_axi_rlast, Ite(tx_arlen == BvConst(1,8), BvConst(1,1), s_axi_rlast));
     instr.SetUpdate(tx_ractive, Ite(s_axi_rlast == BvConst(1,1), BvConst(0,1), tx_ractive));
     instr.SetUpdate(s_axi_rvalid, Ite(unknownVal(1) == 1, BvConst(1,1), BvConst(0,1)));
-
-    // Data
-    auto data = Ite(Extract(tx_arsize,1,0) == 0, Concat(Concat(unknownVal(8),unknownVal(8)), Concat(unknownVal(8),unknownVal(8))),
-                Ite(Extract(tx_arsize,1,0) == 1, Concat(unknownVal(16),unknownVal(16)), unknownVal(32)));
-    instr.SetUpdate(s_axi_rdata, data);
 
     instr.SetUpdate(s_axi_rresp, Ite(unknownVal(1) == 1, BvConst(2,2), BvConst(0,2) ));
   }

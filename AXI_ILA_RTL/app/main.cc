@@ -109,6 +109,28 @@ int main(int argc, char **argv) {
   verifyAxiSlaveRW(esaxi.wmodel, vtg_cfg, design_files, "varmap-esaxi-write.json", "instcond-esaxi-write.json");
   verifyAxiSlaveRW(esaxi.rmodel, vtg_cfg, design_files, "varmap-esaxi-read.json",  "instcond-esaxi-read.json");
 
+  
+  std::string verilog_file_name = "esaxi_w.v";
+  std::ofstream fw_verilog(verilog_file_name);
+  esaxi.wmodel.ExportToVerilog(fw_verilog);
+  fw_verilog.close();
+
+  verilog_file_name = "esaxi_r.v";
+  fw_verilog.open(verilog_file_name);
+  esaxi.rmodel.ExportToVerilog(fw_verilog);
+  fw_verilog.close();
+
+  verilog_file_name = "emaxi_w.v";
+  fw_verilog.open(verilog_file_name);
+  emaxi.wmodel.ExportToVerilog(fw_verilog);
+  fw_verilog.close();
+
+  verilog_file_name = "emaxi_r.v";
+  fw_verilog.open(verilog_file_name);
+  emaxi.wmodel.ExportToVerilog(fw_verilog);
+  fw_verilog.close();
+
+
   return 0;
 }
 
