@@ -96,8 +96,8 @@ int main(int argc, char **argv) {
     "packet2emesh.v"
   };
 
-  //auto vtg_cfg = SetConfiguration();
-  auto vtg_cfg = HandleArguments(argc, argv);
+  auto vtg_cfg = SetConfiguration();
+  //auto vtg_cfg = HandleArguments(argc, argv);
 
   // build the model
   EmeshAxiMasterBridge emaxi;
@@ -159,9 +159,9 @@ VerilogVerificationTargetGenerator::vtg_config_t SetConfiguration() {
   SetUnsignedComparison(true); 
   
   VerilogVerificationTargetGenerator::vtg_config_t ret;
-  ret.CosaSolver = "btor";
-  ret.CosaPyEnvironment = "~/cosaEnv/bin/activate";
-  ret.CosaPath = "~/CoSA";
+  ret.CosaSolver = "z3";
+  ret.CosaPyEnvironment = "/ibuild/ilang-env/bin/activate";
+  ret.CosaPath = "/ibuild/CoSA";
   ret.CosaGenTraceVcd = true;
 
   /// other configurations
