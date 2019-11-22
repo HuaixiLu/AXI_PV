@@ -30,10 +30,10 @@
  
     // Inputs
     "s_axi_awid":      "s_axi_awid",
-    "s_axi_awaddr":    "**KEEP**",
-    "s_axi_awlen":     "**KEEP**",
-    "s_axi_awsize":    "**KEEP**",
-    "s_axi_awburst":   "**KEEP**",
+    "s_axi_awaddr":    "s_axi_awaddr**",
+    "s_axi_awlen":     "s_axi_awlen",
+    "s_axi_awsize":    "s_axi_awsize",
+    "s_axi_awburst":   "s_axi_awburst",
     "s_axi_awlock":    "**KEEP**",
     "s_axi_awcache":   "**KEEP**",
     "s_axi_awprot":    "**KEEP**",
@@ -45,6 +45,7 @@
     "s_axi_wlast":     "s_axi_wlast",
     "s_axi_wvalid":    "s_axi_wvalid",
     "s_axi_bready":    "s_axi_bready",
+
     "s_axi_arid":      "**KEEP**",
     "s_axi_araddr":    "**KEEP**",
     "s_axi_arlen":     "**KEEP**",
@@ -56,7 +57,8 @@
     "s_axi_arqos":     "**KEEP**",
     "s_axi_arvalid":   "**KEEP**",
     "s_axi_rready":    "**KEEP**",
- 
+    
+    // Outputs
     "s_axi_awready" :     "**SO**",
     "s_axi_wready" :      "**SO**",
     "s_axi_bid" :         "**SO**",
