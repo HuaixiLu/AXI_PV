@@ -115,7 +115,7 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
   // ------ AW Channel ------  //
   { 
     auto instr = wmodel.NewInstr("AW_Slave_Wait"); 
-    instr.SetDecode( (s_axi_awready == 0) & (tx_wactive == 0) & (tx_bwait == 0) & ( s_axi_aresetn_w == 1 ) );
+    instr.SetDecode( (tx_wactive == 0) & (tx_bwait == 0) & (s_axi_awready == 0) & ( s_axi_aresetn_w == 1 ) );
 
     instr.SetUpdate(s_axi_awready, BvConst(1,1));
   }
@@ -139,14 +139,14 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
 
   { 
     auto instr = wmodel.NewInstr("W_Slave_Wait"); 
-    instr.SetDecode( (s_axi_wready == 0) & (tx_wactive == 1) & ( s_axi_aresetn_w == 1 ) );
+    instr.SetDecode( (tx_wactive == 1) & (s_axi_wready == 0) & ( s_axi_aresetn_w == 1 ) );
 
     instr.SetUpdate(s_axi_wready, unknownVal(1)); // unkownVal == ~wr_wait
   }
 
   { // W_Slave_Busy
     auto instr = wmodel.NewInstr("W_Slave_Busy"); 
-    instr.SetDecode( (s_axi_wready == 1) & (s_axi_wvalid == 1) & ( s_axi_aresetn_w == 1 ) & (tx_wactive == 1) & (s_axi_bvalid == 0));
+    instr.SetDecode( (tx_wactive == 1) & (s_axi_wready == 1) & (s_axi_wvalid == 1) & (s_axi_bvalid == 0) & (s_axi_awready == 0) & ( s_axi_aresetn_w == 1 ));
 
     // tx_wactive ----- last_wr_beat : two important points
     instr.SetUpdate(s_axi_wready, Ite(s_axi_wlast == 1, BvConst(0,1), unknownVal(1))); // unkownVal == ~wr_wait
