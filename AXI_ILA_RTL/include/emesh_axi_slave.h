@@ -121,7 +121,7 @@ protected:
   // internal state
   ExprRef tx_wactive;
   ExprRef tx_bwait;
-  ExprRef tx_awlen;
+  // ExprRef tx_awlen;
   ExprRef tx_awsize;
   ExprRef tx_awaddr;
   ExprRef tx_awburst;
