@@ -76,7 +76,7 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
   // ---------------------------------------------------------------------------- //
   // ---------------------------------------------------------------------------- //
   /*
-    W_Slave_Reset -> AW_Slave_Commit -> W_Slave_Wait -> W_Slave_Busy -> B_Slave_Commit -> AW_Slave_Wait
+    W_Slave_Reset -> AW_Slave_Wait -> AW_Slave_Commit -> W_Slave_Wait -> W_Slave_Busy -> B_Slave_Commit 
   */
   // ---------------------------------------------------------------------------- //
   // ---------------------------------------------------------------------------- //
@@ -229,7 +229,7 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
 
   { // R_Slave_Busy
     auto instr = rmodel.NewInstr("R_Slave_Busy");
-    instr.SetDecode( (s_axi_aresetn_r == 1) & (s_axi_rready == 1) & (s_axi_rvalid == 1) & (tx_ractive == 1));
+    instr.SetDecode( (s_axi_aresetn_r == 1) & (s_axi_rready == 1) & (s_axi_rvalid == 1) & (tx_ractive == 1) & (s_axi_arready == 0));
 
     // instr.SetUpdate(tx_araddr, Ite(s_axi_arburst == BvConst(1,2), (TODO: update addr), tx_addr), tx_araddr)));
     // Compute when to finish reading
