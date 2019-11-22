@@ -30,7 +30,7 @@
  
     // Inputs
     "s_axi_awid":      "s_axi_awid",
-    "s_axi_awaddr":    "s_axi_awaddr**",
+    "s_axi_awaddr":    "s_axi_awaddr",
     "s_axi_awlen":     "s_axi_awlen",
     "s_axi_awsize":    "s_axi_awsize",
     "s_axi_awburst":   "s_axi_awburst",
