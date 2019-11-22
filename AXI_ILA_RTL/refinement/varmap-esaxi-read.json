@@ -71,11 +71,11 @@
   "s_axi_aclk"    :           "**CLOCK**"
   },
 
-  "mapping control" : [   "m0.read_valid == m1.rr_return_access",
-    "m0.read_data_7_0 == m1.rr_return_data[7:0]",
-    "m0.read_data_15_0 == m1.rr_return_data[15:0]",
-    "m0.read_data_31_0 == m1.rr_return_data[31:0]",
-    "m0.read_resp == {m1.rr_timeout_access, 1'b0}"
+  "mapping control" : [   "read_valid == m1.rr_return_access",
+    "read_data_7_0 == m1.rr_return_data[7:0]",
+    "read_data_15_0 == m1.rr_return_data[15:0]",
+    "read_data_31_0 == m1.rr_return_data[31:0]",
+    "read_resp == {m1.rr_timeout_access, 1'b0}"
   ],
 
   "functions":{}
