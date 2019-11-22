@@ -73,7 +73,7 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
   // but necessary for modeling
   tx_wactive(wmodel.NewBvState("tx_wactive", 1)), // write_wactive
   tx_bwait(wmodel.NewBvState("tx_bwait", 1)), // b_wait
-  tx_awlen (wmodel.NewBvState("tx_awlen", 8)), // axi_awlen
+  //tx_awlen (wmodel.NewBvState("tx_awlen", 8)), // axi_awlen
   tx_awsize(wmodel.NewBvState("tx_awsize", 3)),
   tx_awaddr(wmodel.NewBvState("tx_awaddr", 32)),
   tx_awburst(wmodel.NewBvState("tx_awburst", 2)),
