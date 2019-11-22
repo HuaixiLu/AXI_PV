@@ -54,11 +54,6 @@
    "s_axi_arqos":     "**KEEP**",
    "s_axi_arvalid":   "s_axi_arvalid",
    "s_axi_rready":    "s_axi_rready",
-   "read_valid":      "rr_return_access",
-   "read_data_7_0":   "rr_return_data[7:0]",
-   "read_data_15_0":  "rr_return_data[15:0]",
-   "read_data_31_0":  "rr_return_data[31:0]",
-   "read_resp":       "{rr_timeout_access, 1'b0}",
 
    "s_axi_awready" :     "**SO**",
    "s_axi_wready" :      "**SO**",
@@ -76,7 +71,12 @@
   "s_axi_aclk"    :           "**CLOCK**"
   },
 
-  "mapping control" : [],
+  "mapping control" : [   "m0.read_valid == m1.rr_return_access",
+    "m0.read_data_7_0 == m1.rr_return_data[7:0]",
+    "m0.read_data_15_0 == m1.rr_return_data[15:0]",
+    "m0.read_data_31_0 == m1.rr_return_data[31:0]",
+    "m0.read_resp == {m1.rr_timeout_access, 1'b0}"
+  ],
 
   "functions":{}
 
