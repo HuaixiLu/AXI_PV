@@ -162,7 +162,7 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
 
   { // B_Slave_Commit
     auto instr = wmodel.NewInstr("B_Slave_Commit");
-    instr.SetDecode( (tx_wactive == 0) & (tx_bwait == 1) & ( s_axi_bvalid == 1 ) & ( s_axi_bready == 1 ) & ( s_axi_aresetn_w == 1 ) );
+    instr.SetDecode( (tx_bwait == 1) & (s_axi_wready == 0) & ( s_axi_bvalid == 1 ) & ( s_axi_bready == 1 ) & ( s_axi_aresetn_w == 1 ) );
 
     instr.SetUpdate(s_axi_bvalid, BvConst(0,1));
     instr.SetUpdate(tx_bwait, BvConst(0,1));
