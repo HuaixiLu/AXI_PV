@@ -108,7 +108,7 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
     instr.SetUpdate(s_axi_awready, BvConst(1,1)); // default state recommends to be high
     instr.SetUpdate(tx_wactive, BvConst(0,1));
     instr.SetUpdate(s_axi_bid, BvConst(0,S_IDW));
-    instr.SetUpdate(tx_awlen, BvConst(0,8));
+    //instr.SetUpdate(tx_awlen, BvConst(0,8));
     instr.SetUpdate(tx_awsize, BvConst(0,3));
     instr.SetUpdate(tx_awaddr, BvConst(0,32));
     instr.SetUpdate(tx_awburst, BvConst(0,2));
@@ -139,7 +139,7 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
 
     // update the info of the write transaction(burst_based transaction)
     instr.SetUpdate(s_axi_bid, s_axi_awid);
-    instr.SetUpdate(tx_awlen, s_axi_awlen);
+    //instr.SetUpdate(tx_awlen, s_axi_awlen);
     instr.SetUpdate(tx_awsize, s_axi_awsize);
     instr.SetUpdate(tx_awaddr, s_axi_awaddr);
     instr.SetUpdate(tx_awburst, s_axi_awburst);
@@ -164,7 +164,7 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
     // ok resp
     instr.SetUpdate(s_axi_bresp, Ite(s_axi_wlast == 1, BvConst(0,2), s_axi_bresp));
     // info update
-    instr.SetUpdate(tx_awlen, tx_awlen - BvConst(1,8));
+    //instr.SetUpdate(tx_awlen, tx_awlen - BvConst(1,8));
     instr.SetUpdate(tx_awaddr, Ite(tx_awburst == BvConst(1,2), Concat(Extract(tx_awaddr,31,2) + BvConst(1,30) , BvConst(0,2)), tx_awaddr));
   }
 
