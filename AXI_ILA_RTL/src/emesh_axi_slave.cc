@@ -73,12 +73,16 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
   // but necessary for modeling
   tx_wactive(wmodel.NewBvState("tx_wactive", 1)), // write_wactive
   tx_bwait(wmodel.NewBvState("tx_bwait", 1)), // b_wait
+  tx_awlen (wmodel.NewBvState("tx_awlen", 8)), // axi_awlen
+  tx_awsize(wmodel.NewBvState("tx_awsize", 3)),
+  tx_awaddr(wmodel.NewBvState("tx_awaddr", 32)),
+  tx_awburst(wmodel.NewBvState("tx_awburst", 2)),
+
   tx_ractive(rmodel.NewBvState("tx_ractive", 1)), // read_wactive
-
   tx_arlen (rmodel.NewBvState("tx_arlen", 8)), // axi_arlen
-  tx_arsize(rmodel.NewBvState("tx_arsize", 3))
-
-
+  tx_arsize(rmodel.NewBvState("tx_arsize", 3)),
+  tx_araddr(rmodel.NewBvState("tx_araddr", 32)),
+  tx_arburst(rmodel.NewBvState("tx_arburst", 2))
 
   // ------------------------------------------------------------------
 {
@@ -104,6 +108,10 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
     instr.SetUpdate(s_axi_awready, BvConst(1,1)); // default state recommends to be high
     instr.SetUpdate(tx_wactive, BvConst(0,1));
     instr.SetUpdate(s_axi_bid, BvConst(0,S_IDW));
+    instr.SetUpdate(tx_awlen, BvConst(0,8));
+    instr.SetUpdate(tx_awsize, BvConst(0,3));
+    instr.SetUpdate(tx_awaddr, BvConst(0,32));
+    instr.SetUpdate(tx_awburst, BvConst(0,2));
     
     // Write data
     instr.SetUpdate(s_axi_bvalid, BvConst(0,1)); // a slave interface must drive RVALID and BVALID low
@@ -113,14 +121,14 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
   }
 
   // ------ AW Channel ------  //
-  { 
+
+  { // AW_Slave_Wait
     auto instr = wmodel.NewInstr("AW_Slave_Wait"); 
     instr.SetDecode( (tx_wactive == 0) & (tx_bwait == 0) & (s_axi_awready == 0) & ( s_axi_aresetn_w == 1 ) );
-
     instr.SetUpdate(s_axi_awready, BvConst(1,1));
   }
 
-  { 
+  { // AW_Slave_Commit
     auto instr = wmodel.NewInstr("AW_Slave_Commit");
     instr.SetDecode( (tx_wactive == 0) & (s_axi_awready == 1) & (s_axi_awvalid == 1) & (s_axi_aresetn_w == 1) );
 
@@ -131,31 +139,33 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
 
     // update the info of the write transaction(burst_based transaction)
     instr.SetUpdate(s_axi_bid, s_axi_awid);
+    instr.SetUpdate(tx_awlen, s_axi_awlen);
+    instr.SetUpdate(tx_awsize, s_axi_awsize);
+    instr.SetUpdate(tx_awaddr, s_axi_awaddr);
+    instr.SetUpdate(tx_awburst, s_axi_awburst);
   }
-
-
 
   // ------ W Channel ------  //
 
-  { 
+  { // W_Slave_Wait
     auto instr = wmodel.NewInstr("W_Slave_Wait"); 
     instr.SetDecode( (tx_wactive == 1) & (s_axi_wready == 0) & ( s_axi_aresetn_w == 1 ) );
-
     instr.SetUpdate(s_axi_wready, unknownVal(1)); // unkownVal == ~wr_wait
   }
 
   { // W_Slave_Busy
     auto instr = wmodel.NewInstr("W_Slave_Busy"); 
     instr.SetDecode( (tx_wactive == 1) & (s_axi_wready == 1) & (s_axi_wvalid == 1) & (s_axi_bvalid == 0) & (s_axi_awready == 0) & ( s_axi_aresetn_w == 1 ));
-
     // tx_wactive ----- last_wr_beat : two important points
     instr.SetUpdate(s_axi_wready, Ite(s_axi_wlast == 1, BvConst(0,1), unknownVal(1))); // unkownVal == ~wr_wait
     instr.SetUpdate(tx_wactive, Ite(s_axi_wlast == 1, BvConst(0,1), tx_wactive));
-    // After transaction, change back to 0
+    instr.SetUpdate(tx_bwait, Ite(s_axi_wlast == 1, ~s_axi_bready, tx_bwait));
     instr.SetUpdate(s_axi_bvalid, Ite(s_axi_wlast == 1, BvConst(1,1), s_axi_bvalid));
     // ok resp
     instr.SetUpdate(s_axi_bresp, Ite(s_axi_wlast == 1, BvConst(0,2), s_axi_bresp));
-    instr.SetUpdate(tx_bwait, Ite(s_axi_wlast == 1, ~s_axi_bready, tx_bwait));
+    // info update
+    instr.SetUpdate(tx_awlen, tx_awlen - BvConst(1,8));
+    instr.SetUpdate(tx_awaddr, Ite(tx_awburst == BvConst(1,2), Concat(Extract(tx_awaddr,31,2) + BvConst(1,30) , BvConst(0,2)), tx_awaddr));
   }
 
   // ------ B Channel ----- //
@@ -163,18 +173,19 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
   { // B_Slave_Commit
     auto instr = wmodel.NewInstr("B_Slave_Commit");
     instr.SetDecode( (tx_bwait == 1) & (s_axi_wready == 0) & ( s_axi_bvalid == 1 ) & ( s_axi_bready == 1 ) & ( s_axi_aresetn_w == 1 ) );
-
     instr.SetUpdate(s_axi_bvalid, BvConst(0,1));
     instr.SetUpdate(tx_bwait, BvConst(0,1));
   }
 
-  // ---------------------------------------------------------------------------- //
-  // ---------------------------------------------------------------------------- //
+  // ------------------------------------------------------------------------------------ //
+  // ------------------------------------------------------------------------------------ //
   /*
-    R_Slave_Reset -> AR_Slave_Commit -> R_Slave_Prepare -> R_Slave_Busy -> AR_Slave_Wait
+    R_Slave_Reset / AR_Slave_Wait -> AR_Slave_Commit -> R_Slave_Prepare -> R_Slave_Busy
+                        ^                                                      |
+                        |______________________________________________________|
   */
-  // ---------------------------------------------------------------------------- //
-  // ---------------------------------------------------------------------------- //
+  // ------------------------------------------------------------------------------------ //
+  // ------------------------------------------------------------------------------------ //
 
   // Read channel interface -- what corresponds to instruction
   rmodel.SetFetch( lConcat( {s_axi_aresetn_r, s_axi_arvalid, s_axi_arready, s_axi_rready,s_axi_rvalid} ) );
@@ -190,8 +201,8 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
     instr.SetUpdate(tx_ractive, BvConst(0,1));
     instr.SetUpdate(tx_arlen, BvConst(0,8));
     instr.SetUpdate(tx_arsize, BvConst(0,3));
-    //instr.SetUpdate(tx_araddr, BvConst(0,32));
-
+    instr.SetUpdate(tx_araddr, BvConst(0,32));
+    instr.SetUpdate(tx_arburst, BvConst(0,2));
     // R
     instr.SetUpdate(s_axi_rvalid,  BvConst(0,1)); // a slave interface must drive RVALID and BVALID low
     instr.SetUpdate(s_axi_rdata, BvConst(0,32));
@@ -202,6 +213,12 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
 
   //-------- AR Channel ---------//
 
+  { // AR_Slave_Wait
+    auto instr = rmodel.NewInstr("AR_Slave_Wait");
+    instr.SetDecode( (s_axi_aresetn_r == 1) & (s_axi_arready == 0) & (tx_ractive == 0) );
+    instr.SetUpdate(s_axi_arready, BvConst(1,1));
+  }
+
   { // AR_Slave_Commit
     auto instr = rmodel.NewInstr("AR_Slave_Commit");
     instr.SetDecode( (s_axi_aresetn_r == 1) & (s_axi_arvalid == 1) & (s_axi_arready == 1) );
@@ -209,19 +226,14 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
     instr.SetUpdate(s_axi_arready, BvConst(0,1));
     instr.SetUpdate(tx_ractive, BvConst(1,1));
     // update info of read transaction: in AR channel, get the input info; in R channel, calculate itself 
+    instr.SetUpdate(s_axi_rid, s_axi_arid);
     instr.SetUpdate(tx_arlen, s_axi_arlen);
     instr.SetUpdate(tx_arsize, s_axi_arsize);
     instr.SetUpdate(s_axi_rid, s_axi_arid);
-    // instr.SetUpdate(tx_araddr, s_axi_araddr); 
-    
+    instr.SetUpdate(tx_araddr, s_axi_araddr);
+    instr.SetUpdate(tx_arburst, s_axi_arburst);
     // identify read_last, assert it when last bit is read
     instr.SetUpdate(s_axi_rlast, Ite(s_axi_arlen == 0, BvConst(1,1), BvConst(0,1)) );
-  }
-
-  { // AR_Slave_Wait
-    auto instr = rmodel.NewInstr("AR_Slave_Wait");
-    instr.SetDecode( (s_axi_aresetn_r == 1) & (s_axi_arready == 0) & (tx_ractive == 0) );
-    instr.SetUpdate(s_axi_arready, BvConst(1,1));
   }
 
   //------- R Channel -------//
@@ -240,14 +252,13 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
   { // R_Slave_Busy
     auto instr = rmodel.NewInstr("R_Slave_Busy");
     instr.SetDecode( (s_axi_aresetn_r == 1) & (s_axi_rready == 1) & (s_axi_rvalid == 1) & (tx_ractive == 1) & (s_axi_arready == 0));
-
-    // instr.SetUpdate(tx_araddr, Ite(s_axi_arburst == BvConst(1,2), (TODO: update addr), tx_addr), tx_araddr)));
     // Compute when to finish reading
     instr.SetUpdate(tx_arlen, tx_arlen - BvConst(1,8));
+    instr.SetUpdate(tx_araddr, Ite(tx_arburst == BvConst(1,2), Concat(Extract(tx_araddr,31,2) + BvConst(1,30) , BvConst(0,2)), tx_araddr));
+
     instr.SetUpdate(s_axi_rlast, Ite(tx_arlen == BvConst(1,8), BvConst(1,1), s_axi_rlast));
     instr.SetUpdate(tx_ractive, Ite(s_axi_rlast == BvConst(1,1), BvConst(0,1), tx_ractive));
     instr.SetUpdate(s_axi_rvalid, Ite(read_valid == 1, BvConst(1,1), BvConst(0,1)));
-
     instr.SetUpdate(s_axi_rresp, Ite(read_valid == 1, read_resp, s_axi_rresp));
   }
 

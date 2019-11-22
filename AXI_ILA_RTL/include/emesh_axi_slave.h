@@ -121,10 +121,16 @@ protected:
   // internal state
   ExprRef tx_wactive;
   ExprRef tx_bwait;
+  ExprRef tx_awlen;
+  ExprRef tx_awsize;
+  ExprRef tx_awaddr;
+  ExprRef tx_awburst;
+
   ExprRef tx_ractive;
-  
   ExprRef tx_arlen;
   ExprRef tx_arsize;
+  ExprRef tx_araddr;
+  ExprRef tx_arburst;
 
   // Data Input
   ExprRef read_valid;

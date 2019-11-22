@@ -11,7 +11,9 @@
 
     "tx_ractive"     : "tx_ractive == read_active",
     "tx_arlen"       : "tx_arlen == axi_arlen",
-    "tx_arsize"      : "tx_arsize == axi_arsize"
+    "tx_arsize"      : "tx_arsize == axi_arsize",
+    "tx_arburst"     : "tx_arburst == axi_arburst",
+    "tx_araddr"      : "tx_araddr == axi_araddr"
   },
 
   "interface mapping": {
