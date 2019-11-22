@@ -66,7 +66,7 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
   read_valid    (rmodel.NewBvInput("read_valid",     1)),
   read_data_7_0 (rmodel.NewBvInput("read_data_7_0",  8)),
   read_data_15_0(rmodel.NewBvInput("read_data_15_0", 16)),
-  read_data_31_0(rmodel.NewBvInput("read_data_32_0", 32)),
+  read_data_31_0(rmodel.NewBvInput("read_data_31_0", 32)),
   read_resp     (rmodel.NewBvInput("read_resp",      2)),
 
   // internal states -- may not have matches with the Verilog state
