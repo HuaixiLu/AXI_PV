@@ -313,7 +313,8 @@ module esaxi (/*autoarg*/
    always @( posedge s_axi_aclk ) 
      if (~s_axi_aresetn) 
        begin	  
-         s_axi_arready <= 1'b0;
+         //s_axi_arready <= 1'b0; // One possible BUG: specs recommend this to be high!
+         s_axi_arready <= 1'b1;
          read_active   <= 1'b0;         
        end 
      else 
