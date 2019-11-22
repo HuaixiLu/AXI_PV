@@ -85,7 +85,7 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
   // ---------------------------------------------------------------------------- //
   // ---------------------------------------------------------------------------- //
   /*
-    W_Slave_Reset -> AW_Slave_Wait -> AW_Slave_Commit -> W_Slave_Wait -> W_Slave_Busy -> B_Slave_Commit 
+    W_Slave_Reset / AW_Slave_Wait -> AW_Slave_Commit -> W_Slave_Wait -> W_Slave_Busy -> B_Slave_Commit 
   */
   // ---------------------------------------------------------------------------- //
   // ---------------------------------------------------------------------------- //
@@ -113,10 +113,16 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
   }
 
   // ------ AW Channel ------  //
+  { 
+    auto instr = wmodel.NewInstr("AW_Slave_Wait"); 
+    instr.SetDecode( (s_axi_awready == 0) & (tx_wactive == 0) & (tx_bwait == 0) & ( s_axi_aresetn_w == 1 ) );
+
+    instr.SetUpdate(s_axi_awready, BvConst(1,1));
+  }
 
   { 
     auto instr = wmodel.NewInstr("AW_Slave_Commit");
-    instr.SetDecode( (s_axi_awready == 1) & (s_axi_awvalid == 1) & (s_axi_aresetn_w == 1) );
+    instr.SetDecode( (tx_wactive == 0) & (s_axi_awready == 1) & (s_axi_awvalid == 1) & (s_axi_aresetn_w == 1) );
 
     // we're always ready for an address cycle if we're not doing something else; 
     // but when a transaction happens, awready will change to 0
@@ -127,12 +133,7 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
     instr.SetUpdate(s_axi_bid, s_axi_awid);
   }
 
-  { 
-    auto instr = wmodel.NewInstr("AW_Slave_Wait"); 
-    instr.SetDecode( (s_axi_awready == 0) & (tx_wactive == 0) & ( s_axi_aresetn_w == 1 ) );
 
-    instr.SetUpdate(s_axi_awready, Ite(tx_bwait == 0, BvConst(1,1), s_axi_awready));
-  }
 
   // ------ W Channel ------  //
 
@@ -145,7 +146,7 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
 
   { // W_Slave_Busy
     auto instr = wmodel.NewInstr("W_Slave_Busy"); 
-    instr.SetDecode( (s_axi_wready == 1) & (s_axi_wvalid == 1) & ( s_axi_aresetn_w == 1 ) & (tx_wactive == 1) );
+    instr.SetDecode( (s_axi_wready == 1) & (s_axi_wvalid == 1) & ( s_axi_aresetn_w == 1 ) & (tx_wactive == 1) & (tx_bwait == 0) );
 
     // tx_wactive ----- last_wr_beat : two important points
     instr.SetUpdate(s_axi_wready, Ite(s_axi_wlast == 1, BvConst(0,1), unknownVal(1))); // unkownVal == ~wr_wait
@@ -161,7 +162,7 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
 
   { // B_Slave_Commit
     auto instr = wmodel.NewInstr("B_Slave_Commit");
-    instr.SetDecode( ( s_axi_bvalid == 1 ) & ( s_axi_bready == 1 ) & ( s_axi_aresetn_w == 1 ) );
+    instr.SetDecode( (tx_wactive == 0) & (tx_bwait == 1) & ( s_axi_bvalid == 1 ) & ( s_axi_bready == 1 ) & ( s_axi_aresetn_w == 1 ) );
 
     instr.SetUpdate(s_axi_bvalid, BvConst(0,1));
     instr.SetUpdate(tx_bwait, BvConst(0,1));
