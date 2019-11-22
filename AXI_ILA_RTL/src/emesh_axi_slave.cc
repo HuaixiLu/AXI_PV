@@ -231,7 +231,6 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
     instr.SetUpdate(s_axi_rid, s_axi_arid);
     instr.SetUpdate(tx_arlen, s_axi_arlen);
     instr.SetUpdate(tx_arsize, s_axi_arsize);
-    instr.SetUpdate(s_axi_rid, s_axi_arid);
     instr.SetUpdate(tx_araddr, s_axi_araddr);
     instr.SetUpdate(tx_arburst, s_axi_arburst);
     // identify read_last, assert it when last bit is read
