@@ -61,7 +61,14 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
   s_axi_rlast (rmodel.NewBvState("s_axi_rlast",  1)),   //output
   s_axi_rvalid(rmodel.NewBvState("s_axi_rvalid", 1)),   //output
   s_axi_rready(rmodel.NewBvInput("s_axi_rready", 1)),
-  
+
+  // AXI -- Read Data Input
+  read_valid    (rmodel.NewBvInput("read_valid",     1)),
+  read_data_7_0 (rmodel.NewBvInput("read_data_7_0",  8)),
+  read_data_15_0(rmodel.NewBvInput("read_data_15_0", 16)),
+  read_data_31_0(rmodel.NewBvInput("read_data_32_0", 32)),
+  read_resp     (rmodel.NewBvInput("read_resp",      2)),
+
   // internal states -- may not have matches with the Verilog state
   // but necessary for modeling
   tx_wactive(wmodel.NewBvState("tx_wactive", 1)), // write_wactive
@@ -70,6 +77,8 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
 
   tx_arlen (rmodel.NewBvState("tx_arlen", 8)), // axi_arlen
   tx_arsize(rmodel.NewBvState("tx_arsize", 3))
+
+
 
   // ------------------------------------------------------------------
 {
@@ -220,10 +229,10 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
     auto instr = rmodel.NewInstr("R_Slave_Prepare");
     instr.SetDecode((s_axi_aresetn_r == 1) & (tx_ractive == 1) & (s_axi_rvalid == 0) );
     // Data Valid
-    instr.SetUpdate(s_axi_rvalid, Ite(unknownVal(1) == 1, BvConst(1,1), s_axi_rvalid));
-    auto data = Ite(Extract(tx_arsize,1,0) == 0, Concat(Concat(unknownVal(8),unknownVal(8)), Concat(unknownVal(8),unknownVal(8))),
-                Ite(Extract(tx_arsize,1,0) == 1, Concat(unknownVal(16),unknownVal(16)), unknownVal(32)));
-    instr.SetUpdate(s_axi_rdata, Ite(unknownVal(1) == 1, data, s_axi_rdata));
+    instr.SetUpdate(s_axi_rvalid, Ite(read_valid == 1, BvConst(1,1), s_axi_rvalid));
+    auto data = Ite(Extract(tx_arsize,1,0) == 0, Concat(Concat(read_data_7_0, read_data_7_0), Concat(read_data_7_0, read_data_7_0)),
+                Ite(Extract(tx_arsize,1,0) == 1, Concat(read_data_15_0, read_data_15_0), read_data_31_0));
+    instr.SetUpdate(s_axi_rdata, Ite(read_valid == 1, data, s_axi_rdata));
 
   }
 
@@ -236,9 +245,9 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
     instr.SetUpdate(tx_arlen, tx_arlen - BvConst(1,8));
     instr.SetUpdate(s_axi_rlast, Ite(tx_arlen == BvConst(1,8), BvConst(1,1), s_axi_rlast));
     instr.SetUpdate(tx_ractive, Ite(s_axi_rlast == BvConst(1,1), BvConst(0,1), tx_ractive));
-    instr.SetUpdate(s_axi_rvalid, Ite(unknownVal(1) == 1, BvConst(1,1), BvConst(0,1)));
+    instr.SetUpdate(s_axi_rvalid, Ite(read_valid == 1, BvConst(1,1), BvConst(0,1)));
 
-    instr.SetUpdate(s_axi_rresp, Ite(unknownVal(1) == 1, BvConst(2,2), BvConst(0,2) ));
+    instr.SetUpdate(s_axi_rresp, Ite(read_valid == 1, read_resp, s_axi_rresp));
   }
 
 }
