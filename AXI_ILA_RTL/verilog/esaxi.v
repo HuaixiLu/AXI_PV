@@ -358,7 +358,7 @@ module esaxi (/*autoarg*/
               axi_arlen[7:0] <= axi_arlen[7:0] - 1;
               if(axi_arlen[7:0] == 8'd1)
 		s_axi_rlast <= 1'b1;              
-              if( s_axi_arburst == 2'b01) 
+              if( axi_arburst == 2'b01) // BUG!: should be axi_burst
 		begin //incremental burst
 		   axi_araddr[31:2] <= axi_araddr[31:2] + 1;
 		   axi_araddr[1:0]  <= 2'b0;   
