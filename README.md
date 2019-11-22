@@ -2,8 +2,10 @@
 
 Verification based on ILA
 
-**Command to run
+# Command to run
 
+```bash
 mkdir build && cd build && cmake .. && make && ./EXE
 cd ../slave_verification
 python 
+```
