@@ -242,19 +242,3 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
   }
 
 }
-
-/*
-
-  wr_access(wmodel.NewBvInput("wr_access", 1) ),
-  wr_packet(wmodel.NewBvInput("wr_packet",PW) ),
-  wr_wait  (wmodel.NewBvState("wr_wait",   1) ),   // output
-
-  rd_access(rmodel.NewBvInput("rd_access", 1) ),
-  rd_packet(rmodel.NewBvInput("rd_packet",PW) ),
-  rd_wait  (rmodel.NewBvState("rd_wait",   1) ),   // output
-
-  rr_access(rmodel.NewBvState("rr_access",  1) ),  // output
-  rr_packet(rmodel.NewBvState("rr_packet", PW) ), // output
-  rr_wait  (rmodel.NewBvInput("rr_wait",    1) ),   
-
-*/
