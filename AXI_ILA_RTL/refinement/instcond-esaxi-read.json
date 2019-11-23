@@ -4,6 +4,11 @@
       "instruction" : "R_Slave_Reset",
       "ready bound": 1
     },
+    
+    {
+      "instruction" : "AR_Slave_Wait",
+      "ready bound": 1
+    },  
 
     {
       "instruction" : "AR_Slave_Commit",
@@ -16,14 +21,14 @@
     },
 
     {
-      "instruction" : "R_Slave_Busy",
+      "instruction" : "R_Slave_Asserted",
       "ready bound": 1
     },
-    
+
     {
-      "instruction" : "AR_Slave_Wait",
+      "instruction" : "R_Slave_Busy",
       "ready bound": 1
-    }    
+    } 
   ],
   
   "global invariants": []

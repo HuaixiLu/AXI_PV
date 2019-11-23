@@ -182,9 +182,9 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
   // ------------------------------------------------------------------------------------ //
   // ------------------------------------------------------------------------------------ //
   /*
-    R_Slave_Reset / AR_Slave_Wait -> AR_Slave_Commit -> R_Slave_Prepare -> R_Slave_Busy
-                        ^                                                      |
-                        |______________________________________________________|
+    R_Slave_Reset / AR_Slave_Wait -> AR_Slave_Commit -> R_Slave_Prepare -> R_Slave_Asserted -> R_Slave_Busy
+                        ^                                                                          |
+                        |__________________________________________________________________________|
   */
   // ------------------------------------------------------------------------------------ //
   // ------------------------------------------------------------------------------------ //
@@ -248,6 +248,13 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
                 Ite(Extract(tx_arsize,1,0) == 1, Concat(read_data_15_0, read_data_15_0), read_data_31_0));
     instr.SetUpdate(s_axi_rdata, Ite(read_valid == 1, data, s_axi_rdata));
 
+  }
+
+  { // R_Slave_Asserted
+    auto instr = rmodel.NewInstr("R_Slave_Asserted");
+    instr.SetDecode((s_axi_aresetn_r == 1) & (tx_ractive == 1) & (s_axi_rready == 0) & (s_axi_rvalid == 1) & (s_axi_arready == 0) );
+    instr.SetUpdate(s_axi_rvalid, s_axi_rvalid);
+    instr.SetUpdate(s_axi_rdata, s_axi_rdata);
   }
 
   { // R_Slave_Busy
