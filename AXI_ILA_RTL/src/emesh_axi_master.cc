@@ -226,7 +226,7 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
     auto instr = wmodel.NewInstr("AR_Master_Commit"); 
     instr.SetDecode( (m_axi_arvalid == 1) & ( m_axi_arready == 1 ) & ( m_axi_aresetn_w == 1 ) );
     
-    instr.SetUpdate(tx_arlen,   m_axi_arlen));
+    instr.SetUpdate(tx_arlen,   m_axi_arlen);
     instr.SetUpdate(tx_ractive, BvConst(1,1));
 
     instr.SetUpdate(m_axi_arvalid, Ite(read_valid, BvConst(1,1), BvConst(0,1)));
