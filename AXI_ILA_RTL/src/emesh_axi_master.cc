@@ -200,7 +200,7 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
   }
 
 { // AR_Master_Prepare
-    auto instr = wmodel.NewInstr("AR_Master_Prepare");
+    auto instr = rmodel.NewInstr("AR_Master_Prepare");
     instr.SetDecode( (m_axi_arvalid == 0) & ( m_axi_aresetn_w == 1 ) );
 
     instr.SetUpdate(m_axi_arvalid, Ite(read_valid == 1, BvConst(1,1), BvConst(0,1)));
@@ -211,7 +211,7 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
   }
 
   { // AR_Mater_Asserted
-    auto instr = wmodel.NewInstr("AR_Master_Asserted"); // then it should keep the old value
+    auto instr = rmodel.NewInstr("AR_Master_Asserted"); // then it should keep the old value
     instr.SetDecode( (m_axi_arvalid == 1) & ( m_axi_awready == 0 ) & ( m_axi_aresetn_w == 1 ) ); // should keep its old value
 
     instr.SetUpdate(m_axi_arvalid, m_axi_arvalid);
@@ -223,7 +223,7 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
   }
 
   { // AR_Master_Commit
-    auto instr = wmodel.NewInstr("AR_Master_Commit"); 
+    auto instr = rmodel.NewInstr("AR_Master_Commit"); 
     instr.SetDecode( (m_axi_arvalid == 1) & ( m_axi_arready == 1 ) & ( m_axi_aresetn_w == 1 ) );
     
     instr.SetUpdate(tx_arlen,   m_axi_arlen);
