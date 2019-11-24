@@ -121,18 +121,18 @@ protected:
 
   //Input
   ExprRef write_valid;
-  ExprRef aw_len;
-  ExprRef aw_addr;
-  ExprRef aw_size;
-  ExprRef aw_burst;
+  ExprRef awlen;
+  ExprRef awaddr;
+  ExprRef awsize;
+  ExprRef awburst;
   ExprRef wdata;
   ExprRef wstrb;
 
   ExprRef read_valid;
-  ExprRef ar_len;
-  ExprRef ar_addr;
-  ExprRef ar_size;
-  ExprRef ar_burst;
+  ExprRef arlen;
+  ExprRef araddr;
+  ExprRef arsize;
+  ExprRef arburst;
   ExprRef read_ready;
 
 }; // class EmeshAxiMasterBridge
