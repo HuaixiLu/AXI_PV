@@ -145,7 +145,7 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
     instr.SetUpdate(m_axi_awsize,  Ite(write_valid, awsize, unknownVal(3)));
     instr.SetUpdate(m_axi_awburst, Ite(write_valid, awburst, unknownVal(2)));
 
-    instr.SetUpdate(s_axi_rlast, Ite(awlen == 0, BvConst(1,1), BvConst(0,1)) );
+    instr.SetUpdate(m_axi_rlast, Ite(awlen == BvConst(0,8), BvConst(1,1), BvConst(0,1)) );
   }
 
   { // W_Master_Prepare
@@ -173,7 +173,7 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
     instr.SetUpdate( m_axi_wdata,  Ite( write_valid, wdata, unknownVal(DATA_LEN) ) );
     instr.SetUpdate( m_axi_wstrb,  Ite( write_valid, wstrb, unknownVal(8)) );
     instr.SetUpdate( m_axi_wvalid, Ite( write_valid, BvConst(1,1), BvConst(0,1)));
-    instr.SetUpdate( tx_awlen,   tx_awlen - BvConst(1,8)));
+    instr.SetUpdate( tx_awlen,   tx_awlen - BvConst(1,8));
     instr.SetUpdate( tx_wacitve, Ite(tx_awlen == BvConst(1,8), BvConst(0,1), tx_wactive));
     instr.SetUpdate( m_axi_wlast, Ite(tx_awlen == BvConst(1,8), BvConst(1,1), m_axi_wlast));
   }
