@@ -245,7 +245,7 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
   {
     auto instr = rmodel.NewInstr("R_Master_Busy");
     instr.SetDecode( (m_axi_aresetn_r == 1) & (m_axi_rvalid == 1) & (m_axi_rvalid == 1));
-    instr.SetUpdate( tx_arlen,   tx_arlen - BvConst(1,8)));
+    instr.SetUpdate( tx_arlen,   tx_arlen - BvConst(1,8));
     instr.SetUpdate( tx_racitve, Ite(tx_arlen == BvConst(1,8), BvConst(0,1), tx_ractive));
   }
 
