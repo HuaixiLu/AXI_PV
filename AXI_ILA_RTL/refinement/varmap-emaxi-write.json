@@ -22,7 +22,7 @@
 
     "tx_wactive" : null,
     "tx_bwait": null,
-    "tx_arlen": null
+    "tx_awlen": null
   },
 
   "interface mapping": {
