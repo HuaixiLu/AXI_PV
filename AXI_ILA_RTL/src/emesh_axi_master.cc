@@ -99,7 +99,7 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
   wmodel.SetValid( /*always true*/ BoolConst(true) );
 
   { // reset instruction
-    auto instr = wmodel.NewInstr("WReset");
+    auto instr = wmodel.NewInstr("W_Master_Reset");
     instr.SetDecode( m_axi_aresetn_w == 0 );
     instr.SetUpdate(m_axi_awvalid, BvConst(0,1));
     instr.SetUpdate(m_axi_wvalid,  BvConst(0,1));
