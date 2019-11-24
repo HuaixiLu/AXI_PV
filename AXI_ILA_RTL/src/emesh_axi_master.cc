@@ -113,11 +113,11 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
     auto instr = wmodel.NewInstr("AW_Master_Prepare");
     instr.SetDecode( (m_axi_awvalid == 0) & ( m_axi_aresetn_w == 1 ) );
 
-    instr.SetUpdate(m_axi_awvalid, Ite(write_valid, BvConst(1,1), BvConst(0,1)));
-    instr.SetUpdate(m_axi_awaddr,  Ite(write_valid, awaddr, unknownVal(32)));
-    instr.SetUpdate(m_axi_awlen,   Ite(write_valid, awlen, unknownVal(8)));
-    instr.SetUpdate(m_axi_awsize,  Ite(write_valid, awsize, unknownVal(3)));
-    instr.SetUpdate(m_axi_awburst, Ite(write_valid, awburst, unknownVal(2)));
+    instr.SetUpdate(m_axi_awvalid, Ite(write_valid == 1, BvConst(1,1), BvConst(0,1)));
+    instr.SetUpdate(m_axi_awaddr,  Ite(write_valid == 1, awaddr, unknownVal(32)));
+    instr.SetUpdate(m_axi_awlen,   Ite(write_valid == 1, awlen, unknownVal(8)));
+    instr.SetUpdate(m_axi_awsize,  Ite(write_valid == 1, awsize, unknownVal(3)));
+    instr.SetUpdate(m_axi_awburst, Ite(write_valid == 1, awburst, unknownVal(2)));
   }
 
   { // AW_Mater_Asserted
@@ -139,11 +139,11 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
     instr.SetUpdate(tx_awlen,   m_axi_awlen);
     instr.SetUpdate(tx_wactive, BvConst(1,1));
 
-    instr.SetUpdate(m_axi_awvalid, Ite(write_valid, BvConst(1,1), BvConst(0,1)));
-    instr.SetUpdate(m_axi_awaddr,  Ite(write_valid, awaddr, unknownVal(32)));
-    instr.SetUpdate(m_axi_awlen,   Ite(write_valid, awlen, unknownVal(8)));
-    instr.SetUpdate(m_axi_awsize,  Ite(write_valid, awsize, unknownVal(3)));
-    instr.SetUpdate(m_axi_awburst, Ite(write_valid, awburst, unknownVal(2)));
+    instr.SetUpdate(m_axi_awvalid, Ite(write_valid == 1, BvConst(1,1), BvConst(0,1)));
+    instr.SetUpdate(m_axi_awaddr,  Ite(write_valid == 1, awaddr, unknownVal(32)));
+    instr.SetUpdate(m_axi_awlen,   Ite(write_valid == 1, awlen, unknownVal(8)));
+    instr.SetUpdate(m_axi_awsize,  Ite(write_valid == 1, awsize, unknownVal(3)));
+    instr.SetUpdate(m_axi_awburst, Ite(write_valid == 1, awburst, unknownVal(2)));
 
     instr.SetUpdate(m_axi_rlast, Ite(awlen == BvConst(0,8), BvConst(1,1), BvConst(0,1)) );
   }
@@ -152,9 +152,9 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
     auto instr = wmodel.NewInstr("W_Master_Prepare");
     instr.SetDecode( (m_axi_wvalid == 0) & (m_axi_aresetn_w == 1) );
 
-    instr.SetUpdate( m_axi_wdata,  Ite( write_valid, wdata, unknownVal(DATA_LEN) ) );
-    instr.SetUpdate( m_axi_wstrb,  Ite( write_valid, wstrb, unknownVal(8)) );
-    instr.SetUpdate( m_axi_wvalid, Ite( write_valid, BvConst(1,1), BvConst(0,1)));
+    instr.SetUpdate( m_axi_wdata,  Ite( write_valid == 1, wdata, unknownVal(DATA_LEN) ) );
+    instr.SetUpdate( m_axi_wstrb,  Ite( write_valid == 1, wstrb, unknownVal(8)) );
+    instr.SetUpdate( m_axi_wvalid, Ite( write_valid == 1, BvConst(1,1), BvConst(0,1)));
   }
 
   { // W_Master_Asserted
@@ -170,9 +170,9 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
     auto instr = wmodel.NewInstr("W_Master_Busy");
     instr.SetDecode( (m_axi_wvalid == 1) & (m_axi_wready == 1) & (m_axi_aresetn_w == 1) );
 
-    instr.SetUpdate( m_axi_wdata,  Ite( write_valid, wdata, unknownVal(DATA_LEN) ) );
-    instr.SetUpdate( m_axi_wstrb,  Ite( write_valid, wstrb, unknownVal(8)) );
-    instr.SetUpdate( m_axi_wvalid, Ite( write_valid, BvConst(1,1), BvConst(0,1)));
+    instr.SetUpdate( m_axi_wdata,  Ite( write_valid == 1, wdata, unknownVal(DATA_LEN) ) );
+    instr.SetUpdate( m_axi_wstrb,  Ite( write_valid == 1, wstrb, unknownVal(8)) );
+    instr.SetUpdate( m_axi_wvalid, Ite( write_valid == 1, BvConst(1,1), BvConst(0,1)));
     instr.SetUpdate( tx_awlen,   tx_awlen - BvConst(1,8));
     instr.SetUpdate( tx_wactive, Ite(tx_awlen == BvConst(1,8), BvConst(0,1), tx_wactive));
     instr.SetUpdate( m_axi_wlast, Ite(tx_awlen == BvConst(1,8), BvConst(1,1), m_axi_wlast));
@@ -203,11 +203,11 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
     auto instr = wmodel.NewInstr("AR_Master_Prepare");
     instr.SetDecode( (m_axi_arvalid == 0) & ( m_axi_aresetn_w == 1 ) );
 
-    instr.SetUpdate(m_axi_arvalid, Ite(read_valid, BvConst(1,1), BvConst(0,1)));
-    instr.SetUpdate(m_axi_araddr,  Ite(read_valid, araddr, unknownVal(32)));
-    instr.SetUpdate(m_axi_arlen,   Ite(read_valid, arlen, unknownVal(8)));
-    instr.SetUpdate(m_axi_arsize,  Ite(read_valid, arsize, unknownVal(3)));
-    instr.SetUpdate(m_axi_arburst, Ite(read_valid, arburst, unknownVal(2)));
+    instr.SetUpdate(m_axi_arvalid, Ite(read_valid == 1, BvConst(1,1), BvConst(0,1)));
+    instr.SetUpdate(m_axi_araddr,  Ite(read_valid == 1, araddr, unknownVal(32)));
+    instr.SetUpdate(m_axi_arlen,   Ite(read_valid == 1, arlen, unknownVal(8)));
+    instr.SetUpdate(m_axi_arsize,  Ite(read_valid == 1, arsize, unknownVal(3)));
+    instr.SetUpdate(m_axi_arburst, Ite(read_valid == 1, arburst, unknownVal(2)));
   }
 
   { // AR_Mater_Asserted
@@ -229,11 +229,11 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
     instr.SetUpdate(tx_arlen,   m_axi_arlen);
     instr.SetUpdate(tx_ractive, BvConst(1,1));
 
-    instr.SetUpdate(m_axi_arvalid, Ite(read_valid, BvConst(1,1), BvConst(0,1)));
-    instr.SetUpdate(m_axi_araddr,  Ite(read_valid, araddr, unknownVal(32)));
-    instr.SetUpdate(m_axi_arlen,   Ite(read_valid, arlen, unknownVal(8)));
-    instr.SetUpdate(m_axi_arsize,  Ite(read_valid, arsize, unknownVal(3)));
-    instr.SetUpdate(m_axi_arburst, Ite(read_valid, arburst, unknownVal(2)));
+    instr.SetUpdate(m_axi_arvalid, Ite(read_valid == 1, BvConst(1,1), BvConst(0,1)));
+    instr.SetUpdate(m_axi_araddr,  Ite(read_valid == 1, araddr, unknownVal(32)));
+    instr.SetUpdate(m_axi_arlen,   Ite(read_valid == 1, arlen, unknownVal(8)));
+    instr.SetUpdate(m_axi_arsize,  Ite(read_valid == 1, arsize, unknownVal(3)));
+    instr.SetUpdate(m_axi_arburst, Ite(read_valid == 1, arburst, unknownVal(2)));
   }
 
   { // R_Master_Wait
