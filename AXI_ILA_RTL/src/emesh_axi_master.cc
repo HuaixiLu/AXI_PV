@@ -136,7 +136,7 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
     auto instr = wmodel.NewInstr("AW_Master_Commit"); 
     instr.SetDecode( (m_axi_awvalid == 1) & ( m_axi_awready == 1 ) & ( m_axi_aresetn_w == 1 ) );
     
-    instr.SetUpdate(tx_awlen,   m_axi_awlen));
+    instr.SetUpdate(tx_awlen,   m_axi_awlen);
     instr.SetUpdate(tx_wactive, BvConst(1,1));
 
     instr.SetUpdate(m_axi_awvalid, Ite(write_valid, BvConst(1,1), BvConst(0,1)));
@@ -174,7 +174,7 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
     instr.SetUpdate( m_axi_wstrb,  Ite( write_valid, wstrb, unknownVal(8)) );
     instr.SetUpdate( m_axi_wvalid, Ite( write_valid, BvConst(1,1), BvConst(0,1)));
     instr.SetUpdate( tx_awlen,   tx_awlen - BvConst(1,8));
-    instr.SetUpdate( tx_wacitve, Ite(tx_awlen == BvConst(1,8), BvConst(0,1), tx_wactive));
+    instr.SetUpdate( tx_wactive, Ite(tx_awlen == BvConst(1,8), BvConst(0,1), tx_wactive));
     instr.SetUpdate( m_axi_wlast, Ite(tx_awlen == BvConst(1,8), BvConst(1,1), m_axi_wlast));
   }
 
