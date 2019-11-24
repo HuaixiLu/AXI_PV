@@ -1,35 +1,42 @@
 {
   "instructions": [
     {
-      "instruction" : "WReset",
+      "instruction" : "W_Master_Reset",
       "ready bound": 1
     },
     
     {
-      "instruction" : "AXIWriteAddrNotReady",
+      "instruction" : "AW_Master_Prepare",
       "ready bound": 1
     },
 
     {
-      "instruction" : "AXIWriteAddrReady",
+      "instruction" : "AW_Master_Asserted",
       "ready bound": 1
     },
 
     {
-      "instruction" : "AXIWriteDataReady",
+      "instruction" : "AW_Master_Commit",
       "ready bound": 1
     },
 
     {
-      "instruction" : "AXIWriteDataNotReady",
+      "instruction" : "W_Master_Prepare",
       "ready bound": 1
-    }    
+    },
 
-    
+    {
+      "instruction" : "W_Master_Asserted",
+      "ready bound": 1
+    },
+
+    {
+      "instruction" : "W_Master_Busy",
+      "ready bound": 1
+    }
   ],
   
   "global invariants": [
-    "awlen_b == 8'b0"
   ]
 
 }

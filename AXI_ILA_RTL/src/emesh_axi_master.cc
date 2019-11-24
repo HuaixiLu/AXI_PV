@@ -26,7 +26,7 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
 
   // AXI -- Write data
   m_axi_wid   (wmodel.NewBvState("m_axi_wid",     M_IDW)),     // output
-  m_axi_wdata (wmodel.NewBvState("m_axi_wdata",   64)),   // output
+  m_axi_wdata (wmodel.NewBvState("m_axi_wdata",   DATA_LEN)),   // output
   m_axi_wstrb (wmodel.NewBvState("m_axi_wstrb",   8)),   // output
   m_axi_wlast (wmodel.NewBvState("m_axi_wlast",   1)),   // output
   m_axi_wvalid(wmodel.NewBvState("m_axi_wvalid",  1)),  // output
@@ -39,19 +39,6 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
   m_axi_bready(wmodel.NewBvState("m_axi_bready", 1)),  // output
 
   m_axi_aresetn_r (rmodel.NewBvInput("m_axi_aresetn",1)),
-
-  // internal states -- may not have matches with the Verilog state
-  // but necessary for modeling
-  tx_valid(wmodel.NewBvState("tx_valid", 1)),
-  tx_addr_done(wmodel.NewBvState("tx_addr_done", 1)),
-  tx_data_done(wmodel.NewBvState("tx_data_done", 1)),
-  tx_burst(wmodel.NewBvState("tx_burst", 2)),
-  tx_id   (wmodel.NewBvState("tx_id"   , M_IDW)),
-  tx_addr (wmodel.NewBvState("tx_addr" , 32)),
-  tx_data (wmodel.NewBvState("tx_data" , 64)),
-  tx_len  (wmodel.NewBvState("tx_len"  , 8)),
-  tx_size (wmodel.NewBvState("tx_size" , 3)),
-  tx_count(wmodel.NewBvState("tx_count", 8)),
 
   // ------------------------------------------------------------------
   
@@ -71,17 +58,43 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
 
   // AXI -- Read data
   m_axi_rid   (rmodel.NewBvInput("m_axi_rid",    M_IDW)),     
-  m_axi_rdata (rmodel.NewBvInput("m_axi_rdata",  64)),   
+  m_axi_rdata (rmodel.NewBvInput("m_axi_rdata",  DATA_LEN)),   
   m_axi_rresp (rmodel.NewBvInput("m_axi_rresp",  2)),   
   m_axi_rlast (rmodel.NewBvInput("m_axi_rlast",  1)),   
   m_axi_rvalid(rmodel.NewBvInput("m_axi_rvalid", 1)),  
-  m_axi_rready(rmodel.NewBvState("m_axi_rready", 1))  // output
+  m_axi_rready(rmodel.NewBvState("m_axi_rready", 1)),  // output
+
+  // internal states -- may not have matches with the Verilog state
+  // but necessary for modeling
+  tx_wactive(wmodel.NewBvState("tx_wactive", 1)),
+  tx_bwait(wmodel.NewBvState("tx_bwait", 1)),
+  tx_awlen(wmodel.NewBvState("tx_awlen", 8)),
+
+  write_valid(wmodel.NewBvInput("write_valid", 1)),
+  awlen(wmodel.NewBvInput("awlen", 8)),
+  awaddr(wmodel.NewBvInput("awaddr", 32)),
+  awsize(wmodel.NewBvInput("awsize", 3)),
+  awburst(wmodel.NewBvInput("awburst", 2)),
+
+  wdata(wmodel.NewBvInput("wdata", DATA_LEN)),
+  wstrb(wmodel.NewBvInput("wstrb", 8)),
+
+  tx_ractive(rmodel.NewBvState("tx_ractive", 1)),
+  tx_arlen(rmodel.NewBvState("tx_arlen", 8)),
+
+  read_valid(rmodel.NewBvInput("read_valid", 1)),
+  arlen(rmodel.NewBvInput("arlen", 8)),
+  araddr(rmodel.NewBvInput("araddr", 32)),
+  arsize(rmodel.NewBvInput("arsize", 3)),
+  arburst(rmodel.NewBvInput("arburst", 2)),
+  read_ready(rmodel.NewBvInput("read_ready", 1))
+
 {
 
   // write data buffers
 
   // Write channel interface -- what corresponds to instruction
-  wmodel.SetFetch( lConcat({m_axi_aresetn_w, m_axi_awready, m_axi_wready}) );
+  wmodel.SetFetch( lConcat({m_axi_aresetn_w, m_axi_awready, m_axi_wready, m_axi_awvalid, m_axi_wvalid}) );
   // Valid instruction: what means to have valid command (valid = 1)
   wmodel.SetValid( /*always true*/ BoolConst(true) );
 
@@ -96,149 +109,144 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
   }
 
 
-  { // AXIWriteAddrReady instruction
-    auto instr = wmodel.NewInstr("AXIWriteAddrReady");
+  { // AW_Master_Prepare
+    auto instr = wmodel.NewInstr("AW_Master_Prepare");
+    instr.SetDecode( (m_axi_awvalid == 0) & ( m_axi_aresetn_w == 1 ) );
 
-    instr.SetDecode( ( m_axi_awready == 1 ) & ( m_axi_aresetn_w == 1 ) ); // will get what's in its buffer
-    // if ( m_axi_awvalid == 1 ), the a transaction is completed, no value will protentially loaded
-    // you can check it by providing where the next transaction comes
-    // ow. we don't make any guarantee
-    // how much you regard as the spec, how much we check
-    // you need to differentiate the spec of AXI from the spec of this Emesh-AXI-bridge
+    instr.SetUpdate(m_axi_awvalid, Ite(write_valid, BvConst(1,1), BvConst(0,1)));
+    instr.SetUpdate(m_axi_awaddr,  Ite(write_valid, awaddr, unknownVal(32)));
+    instr.SetUpdate(m_axi_awlen,   Ite(write_valid, awlen, unknownVal(8)));
+    instr.SetUpdate(m_axi_awsize,  Ite(write_valid, awsize, unknownVal(3)));
+    instr.SetUpdate(m_axi_awburst, Ite(write_valid, awburst, unknownVal(2)));
+  }
 
-    /* This is one way of treating the spec:
-    auto finish_transaction = ( m_axi_awready == 1 ) & (m_axi_awvalid == 1); 
-    instr.SetUpdate(m_axi_awvalid, Ite(finish_transaction, unknownVal(1),  unknownVal(1) ));
-    instr.SetUpdate(m_axi_awaddr,  Ite(finish_transaction, unknownVal(32), unknownVal(32)));
-    instr.SetUpdate(m_axi_awlen,   Ite(finish_transaction, unknownVal(8),  unknownVal(8) ));
-    instr.SetUpdate(m_axi_awsize,  Ite(finish_transaction, unknownVal(3),  unknownVal(3) ));
-    */
+  { // AW_Mater_Asserted
+    auto instr = wmodel.NewInstr("AW_Master_Asserted"); // then it should keep the old value
+    instr.SetDecode( (m_axi_awvalid == 1) & ( m_axi_awready == 0 ) & ( m_axi_aresetn_w == 1 ) ); // should keep its old value
 
+    instr.SetUpdate(m_axi_awvalid, m_axi_awvalid);
+    instr.SetUpdate(m_axi_awid,   m_axi_awid  );
+    instr.SetUpdate(m_axi_awaddr, m_axi_awaddr);
+    instr.SetUpdate(m_axi_awlen,  m_axi_awlen );
+    instr.SetUpdate(m_axi_awsize, m_axi_awsize);
+    instr.SetUpdate(m_axi_awburst,m_axi_awburst);
+  }
+
+  { // AW_Master_Commit
+    auto instr = wmodel.NewInstr("AW_Master_Commit"); 
+    instr.SetDecode( (m_axi_awvalid == 1) & ( m_axi_awready == 1 ) & ( m_axi_aresetn_w == 1 ) );
     
-    // a general spec
-    instr.SetUpdate(m_axi_awvalid, Ite(m_axi_awvalid == 1, tx_valid & ~tx_addr_done, unknownVal(1)) );
-    instr.SetUpdate(m_axi_awid,    Ite(m_axi_awvalid & tx_valid & ~tx_addr_done == 1, tx_id,   unknownVal(M_IDW)));
-    instr.SetUpdate(m_axi_awaddr,  Ite(m_axi_awvalid & tx_valid & ~tx_addr_done == 1, tx_addr, unknownVal(32)));
-    instr.SetUpdate(m_axi_awlen,   Ite(m_axi_awvalid & tx_valid & ~tx_addr_done == 1, tx_len,  unknownVal(8)));
-    instr.SetUpdate(m_axi_awsize,  Ite(m_axi_awvalid & tx_valid & ~tx_addr_done == 1, tx_size, unknownVal(3)));
-    instr.SetUpdate(m_axi_awburst, Ite(m_axi_awvalid & tx_valid & ~tx_addr_done == 1, tx_burst,unknownVal(2)));
+    instr.SetUpdate(tx_awlen,   m_axi_awlen));
+    instr.SetUpdate(tx_wactive, BvConst(1,1));
+
+    instr.SetUpdate(m_axi_awvalid, Ite(write_valid, BvConst(1,1), BvConst(0,1)));
+    instr.SetUpdate(m_axi_awaddr,  Ite(write_valid, awaddr, unknownVal(32)));
+    instr.SetUpdate(m_axi_awlen,   Ite(write_valid, awlen, unknownVal(8)));
+    instr.SetUpdate(m_axi_awsize,  Ite(write_valid, awsize, unknownVal(3)));
+    instr.SetUpdate(m_axi_awburst, Ite(write_valid, awburst, unknownVal(2)));
+
+    instr.SetUpdate(s_axi_rlast, Ite(awlen == 0, BvConst(1,1), BvConst(0,1)) );
   }
 
-  { // AXIWriteAddrNotReady instruction
-    auto instr = wmodel.NewInstr("AXIWriteAddrNotReady"); // then it should keep the old value
+  { // W_Master_Prepare
+    auto instr = wmodel.NewInstr("W_Master_Prepare");
+    instr.SetDecode( (m_axi_wvalid == 0) & (m_axi_aresetn_w == 1) );
 
-    instr.SetDecode( ( m_axi_awready == 0 ) & ( m_axi_aresetn_w == 1 ) ); // should keep its old value
-    // if it is valid, you should keep it
-    // if it is not valid, there must be a chance that m_axi_awvalid can be 1 (does not wait on awready)
-    instr.SetUpdate(m_axi_awvalid,Ite(m_axi_awvalid == 1, m_axi_awvalid, Ite(unknownVal(1) == 1, BvConst(1,1) , unknownVal(1) ) ));
-    instr.SetUpdate(m_axi_awid,   Ite(m_axi_awvalid == 1, m_axi_awid,    unknownVal(M_IDW)) );
-    instr.SetUpdate(m_axi_awaddr, Ite(m_axi_awvalid == 1, m_axi_awaddr,  unknownVal(32) ));
-    instr.SetUpdate(m_axi_awlen,  Ite(m_axi_awvalid == 1, m_axi_awlen,   unknownVal(8) ));
-    instr.SetUpdate(m_axi_awsize, Ite(m_axi_awvalid == 1, m_axi_awsize,  unknownVal(3) ));
+    instr.SetUpdate( m_axi_wdata,  Ite( write_valid, wdata, unknownVal(DATA_LEN) ) );
+    instr.SetUpdate( m_axi_wstrb,  Ite( write_valid, wstrb, unknownVal(8)) );
+    instr.SetUpdate( m_axi_wvalid, Ite( write_valid, BvConst(1,1), BvConst(0,1)));
   }
 
-  {
-    // AXIWriteAddrNotReady instruction
-    auto instr = wmodel.NewInstr("AXIWriteDataReady"); // then it should keep the old value
+  { // W_Master_Asserted
+    auto instr = wmodel.NewInstr("W_Master_Asserted");
+    instr.SetDecode( (m_axi_wvalid == 1) & (m_axi_wready == 0) & (m_axi_aresetn_w == 1) );
 
-    instr.SetDecode( ( m_axi_wready == 1 ) & ( m_axi_aresetn_w == 1 ) ); 
-
-    auto tx_size_nbyte = BvConst(1,32) << ZExt( tx_size - 1 , 32);
-    // the start address tx_addr is aligned to the size of transfer
-    // the length of the burst is 2,4,8, or 16
-    auto wrap_shr = Ite(tx_len == 1, BvConst(1,32),
-                    Ite(tx_len == 3, BvConst(2,32),
-                    Ite(tx_len == 7, BvConst(3,32),
-                    Ite(tx_len == 15, BvConst(4,32), unknownVal(32) ))));
-    auto total_bytes = BvConst(1,32) << ( wrap_shr + ZExt( tx_size - 1 , 32) );
-    auto aligned_burst_address = ( tx_addr >> (ZExt(tx_size,32) + wrap_shr) ) << (ZExt(tx_size,32) + wrap_shr);
-    auto current_addr = Ite(tx_burst == BURST_FIXED, tx_addr,
-                        Ite(tx_burst == BURST_INCR,  tx_addr + tx_size_nbyte * ZExt(tx_count,32) ,
-                        Ite(tx_burst == BURST_WRAP,  
-                          Ite( tx_addr + tx_size_nbyte * ZExt(tx_count,32) >= aligned_burst_address + total_bytes, 
-                               tx_addr + tx_size_nbyte * ZExt(tx_count,32) - total_bytes, 
-                               tx_addr + tx_size_nbyte * ZExt(tx_count,32) ),
-                          unknownVal(32))));
-
-    auto strb = Ite( tx_size == 0, BvConst(0x01,8) << ZExt(current_addr(2,0),8), // 1byte
-                Ite( tx_size == 1, BvConst(0x03,8) << ZExt(Concat(current_addr(2,1), BvConst(0,1)),8), // 2bytes
-                Ite( tx_size == 2, BvConst(0x0f,8) << ZExt(Concat(current_addr(2,2), BvConst(0,2)),8), // 4bytes
-                Ite( tx_size == 3, BvConst(0xff,8) , unknownVal(8)  // 8bytes
-                 ))));
-
-    instr.SetUpdate( m_axi_wvalid, Ite( m_axi_wvalid == 1, tx_valid & ~tx_data_done, unknownVal(1) ) );
-    instr.SetUpdate( m_axi_wid,    Ite( m_axi_wvalid & tx_valid & ~tx_data_done == 1, tx_id, unknownVal(M_IDW)) );
-    instr.SetUpdate( m_axi_wdata,  Ite( m_axi_wvalid & tx_valid & ~tx_data_done == 1, tx_data, unknownVal(64) ) );
-    instr.SetUpdate( m_axi_wstrb,  Ite( m_axi_wvalid & tx_valid & ~tx_data_done == 1, strb, unknownVal(8) ) );
-    instr.SetUpdate( m_axi_wlast,  Ite( m_axi_wvalid & tx_valid & ~tx_data_done == 1, Ite( tx_count == tx_len, BvConst(1,1), BvConst(0,1)), unknownVal(1) ) );
-
-    instr.SetUpdate( tx_count,     Ite( m_axi_wvalid & tx_valid & ~tx_data_done == 1, tx_count + 1, BvConst(0, 8) ));
+    instr.SetUpdate( m_axi_wvalid, m_axi_wvalid);
+    instr.SetUpdate( m_axi_wdata,  m_axi_wdata);
+    instr.SetUpdate( m_axi_wstrb,  m_axi_wstrb);
   }
 
+  { // W_Master_Busy
+    auto instr = wmodel.NewInstr("W_Master_Busy");
+    instr.SetDecode( (m_axi_wvalid == 1) & (m_axi_wready == 1) & (m_axi_aresetn_w == 1) );
 
-  {
-    // AXIWriteAddrNotReady instruction
-    auto instr = wmodel.NewInstr("AXIWriteDataNotReady"); // then it should keep the old value
-
-    instr.SetDecode( ( m_axi_wready == 0 ) & ( m_axi_aresetn_w == 1 ) ); // should keep its old value
-    // if it is valid, you should keep it
-    // if it is not valid, there must be a chance that m_axi_awvalid can be 1 (does not wait on awready)
-
-    instr.SetUpdate( m_axi_wid,    Ite(m_axi_wvalid == 1, m_axi_wid,   unknownVal(M_IDW)));
-    instr.SetUpdate( m_axi_wdata,  Ite(m_axi_wvalid == 1, m_axi_wdata, unknownVal(64)));
-    instr.SetUpdate( m_axi_wstrb,  Ite(m_axi_wvalid == 1, m_axi_wstrb, unknownVal(8)));
-    instr.SetUpdate( m_axi_wlast,  Ite(m_axi_wvalid == 1, m_axi_wlast, unknownVal(1)));
-    instr.SetUpdate( m_axi_wvalid, Ite(m_axi_wvalid == 1, m_axi_wvalid, Ite( unknownVal(1) == 1, BvConst(1,1), unknownVal(1))));
+    instr.SetUpdate( m_axi_wdata,  Ite( write_valid, wdata, unknownVal(DATA_LEN) ) );
+    instr.SetUpdate( m_axi_wstrb,  Ite( write_valid, wstrb, unknownVal(8)) );
+    instr.SetUpdate( m_axi_wvalid, Ite( write_valid, BvConst(1,1), BvConst(0,1)));
+    instr.SetUpdate( tx_awlen,   tx_awlen - BvConst(1,8)));
+    instr.SetUpdate( tx_wacitve, Ite(tx_awlen == BvConst(1,8), BvConst(0,1), tx_wactive));
+    instr.SetUpdate( m_axi_wlast, Ite(tx_awlen == BvConst(1,8), BvConst(1,1), m_axi_wlast));
   }
 
-  {
-    auto instr = wmodel.NewInstr("AXIWriteAcknowlege");
+  { // B_Master_Commit
+    auto instr = wmodel.NewInstr("B_Master_Commit");
 
-    instr.SetDecode( ( m_axi_bvalid == 1 ) & ( m_axi_aresetn_w == 1 ) );
-    // if b_ready
+    instr.SetDecode( ( m_axi_bready == 1 ) & ( m_axi_bvalid == 1 ) & ( m_axi_aresetn_w == 1 ) );
+
   }
 
   // ----------------------------------------------------------------------------
 
   // Write channel interface -- what corresponds to instruction
-  rmodel.SetFetch( lConcat({m_axi_aresetn_r, m_axi_arready, m_axi_rvalid }) );
+  rmodel.SetFetch( lConcat({m_axi_aresetn_r, m_axi_arready, m_axi_rready }) );
   // Valid instruction: what means to have valid command (valid = 1)
   rmodel.SetValid( /*always true*/ BoolConst(true) );
 
   {// reset instruction
-    auto instr = rmodel.NewInstr("RReset");
+    auto instr = rmodel.NewInstr("R_Master_Reset");
     instr.SetDecode( m_axi_aresetn_r == 0 );
     instr.SetUpdate(m_axi_arvalid, BvConst(0,1));
-    instr.SetUpdate(m_axi_rvalid,  BvConst(0,1));
+    instr.SetUpdate(m_axi_rready,  BvConst(0,1));
   }
 
-  { //  
-    auto instr = rmodel.NewInstr("AXIReadAddrReady");
-    instr.SetDecode( (m_axi_aresetn_r == 1) & (m_axi_arready == 1) );
-    // the bridge spec should specify the relationship
+{ // AR_Master_Prepare
+    auto instr = wmodel.NewInstr("AR_Master_Prepare");
+    instr.SetDecode( (m_axi_arvalid == 0) & ( m_axi_aresetn_w == 1 ) );
+
+    instr.SetUpdate(m_axi_arvalid, Ite(read_valid, BvConst(1,1), BvConst(0,1)));
+    instr.SetUpdate(m_axi_araddr,  Ite(read_valid, araddr, unknownVal(32)));
+    instr.SetUpdate(m_axi_arlen,   Ite(read_valid, arlen, unknownVal(8)));
+    instr.SetUpdate(m_axi_arsize,  Ite(read_valid, arsize, unknownVal(3)));
+    instr.SetUpdate(m_axi_arburst, Ite(read_valid, arburst, unknownVal(2)));
   }
 
-  { //  
-    auto instr = rmodel.NewInstr("AXIReadAddrNotReady");
-    instr.SetDecode( (m_axi_aresetn_r == 1) & (m_axi_arready == 0) );
-    // if arvalid is 1, it should hold its status
-    instr.SetUpdate(m_axi_arid   , Ite(m_axi_arvalid == 1, m_axi_arid   ,unknownVal(M_IDW)));
-    instr.SetUpdate(m_axi_araddr , Ite(m_axi_arvalid == 1, m_axi_araddr ,unknownVal(32)));
-    instr.SetUpdate(m_axi_arlen  , Ite(m_axi_arvalid == 1, m_axi_arlen  ,unknownVal(8)));
-    instr.SetUpdate(m_axi_arsize , Ite(m_axi_arvalid == 1, m_axi_arsize ,unknownVal(3)));
-    instr.SetUpdate(m_axi_arburst, Ite(m_axi_arvalid == 1, m_axi_arburst,unknownVal(2)));
-    instr.SetUpdate(m_axi_arvalid, Ite(m_axi_arvalid == 1, m_axi_arvalid,unknownVal(1)));
-  } 
+  { // AR_Mater_Asserted
+    auto instr = wmodel.NewInstr("AR_Master_Asserted"); // then it should keep the old value
+    instr.SetDecode( (m_axi_arvalid == 1) & ( m_axi_awready == 0 ) & ( m_axi_aresetn_w == 1 ) ); // should keep its old value
 
-  // AXI spec has no requirement for rready actually
+    instr.SetUpdate(m_axi_arvalid, m_axi_arvalid);
+    instr.SetUpdate(m_axi_arid,   m_axi_arid  );
+    instr.SetUpdate(m_axi_araddr, m_axi_araddr);
+    instr.SetUpdate(m_axi_arlen,  m_axi_arlen );
+    instr.SetUpdate(m_axi_arsize, m_axi_arsize);
+    instr.SetUpdate(m_axi_arburst,m_axi_arburst);
+  }
+
+  { // AR_Master_Commit
+    auto instr = wmodel.NewInstr("AR_Master_Commit"); 
+    instr.SetDecode( (m_axi_arvalid == 1) & ( m_axi_arready == 1 ) & ( m_axi_aresetn_w == 1 ) );
+    
+    instr.SetUpdate(tx_arlen,   m_axi_arlen));
+    instr.SetUpdate(tx_ractive, BvConst(1,1));
+
+    instr.SetUpdate(m_axi_arvalid, Ite(read_valid, BvConst(1,1), BvConst(0,1)));
+    instr.SetUpdate(m_axi_araddr,  Ite(read_valid, araddr, unknownVal(32)));
+    instr.SetUpdate(m_axi_arlen,   Ite(read_valid, arlen, unknownVal(8)));
+    instr.SetUpdate(m_axi_arsize,  Ite(read_valid, arsize, unknownVal(3)));
+    instr.SetUpdate(m_axi_arburst, Ite(read_valid, arburst, unknownVal(2)));
+  }
+
+  { // R_Master_Wait
+    auto instr = rmodel.NewInstr("R_Master_Wait");
+    instr.SetDecode( (m_axi_aresetn_r == 1) & (m_axi_rready == 0) );
+    instr.SetUpdate(m_axi_rready, read_ready);
+  }
+
   {
-    auto instr = rmodel.NewInstr("AXIReadDataNotValid");
-    instr.SetDecode( (m_axi_aresetn_r == 1) & (m_axi_rvalid == 0) );
-  }
-
-  {
-    auto instr = rmodel.NewInstr("AXIReadDataValid");
-    instr.SetDecode( (m_axi_aresetn_r == 1) & (m_axi_rvalid == 1) );
+    auto instr = rmodel.NewInstr("R_Master_Busy");
+    instr.SetDecode( (m_axi_aresetn_r == 1) & (m_axi_rvalid == 1) & (m_axi_rvalid == 1));
+    instr.SetUpdate( tx_arlen,   tx_arlen - BvConst(1,8)));
+    instr.SetUpdate( tx_racitve, Ite(tx_arlen == BvConst(1,8), BvConst(0,1), tx_ractive));
   }
 
 }

@@ -297,7 +297,7 @@ module emaxi(/*autoarg*/
                 begin
                    m_axi_awvalid       <= awvalid_in;
                    m_axi_awaddr[31:0]  <= wr_dstaddr[31:0];
-                   m_axi_awlen[7:0]    <= 8'b0;
+                   m_axi_awlen[7:0]    <= 8'b0;  // potential Bug!
                    m_axi_awsize[2:0]   <= { 1'b0, wr_datamode[1:0]};
                 end
             end

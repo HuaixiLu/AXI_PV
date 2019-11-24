@@ -20,29 +20,22 @@
 
     "m_axi_bready"  : "m_axi_bready",
 
-    "tx_valid" : [["awvalid_b | wvalid_b","tx_valid == awvalid_b | wvalid_b"], ["1'b1","wr_access"]],
-    "tx_addr_done" : "tx_addr_done == !m1.awvalid_b & m1.wvalid_b",
-    "tx_data_done" : "tx_data_done == m1.awvalid_b & !m1.wvalid_b",
-    "tx_burst" : [["awvalid_b | wvalid_b","m_axi_awburst"],        ["1'b1","m_axi_awburst"]],
-    "tx_id"    : [["awvalid_b | wvalid_b","m_axi_awid"],           ["1'b1","m_axi_awid"]],
-    "tx_addr"  : [["awvalid_b | wvalid_b","awaddr_b"],             ["1'b1","wr_dstaddr"]],
-    "tx_data"  : [["awvalid_b | wvalid_b","wdata_b"],              ["1'b1","wdata_aligned"]],
-    "tx_len"   : [["awvalid_b | wvalid_b","awlen_b"],              ["1'b1","tx_len == 8'b0"]],
-    "tx_size"  : [["awvalid_b | wvalid_b","awsize_b"],             ["1'b1","tx_size == { 1'b0, wr_datamode[1:0] }"]],
-    "tx_count" : "tx_count == 8'd0"
+    "tx_wactive" : null,
+    "tx_bwait": null,
+    "tx_arlen": null
   },
 
   "interface mapping": {
 
-   "wr_wait": "**KEEP**",
-   "rd_wait": "**KEEP**",
+   "wr_wait":   "**KEEP**",
+   "rd_wait":   "**KEEP**",
    "rr_access": "**KEEP**",
    "rr_packet": "**KEEP**",
    "wr_access": "**KEEP**",
    "wr_packet": "**KEEP**",
    "rd_access": "**KEEP**",
    "rd_packet": "**KEEP**",
-   "rr_wait": "**KEEP**",
+   "rr_wait":   "**KEEP**",
 
    "m_axi_awid":    "**SO**",
    "m_axi_awaddr":    "**SO**",
@@ -77,45 +70,43 @@
    "m_axi_bid" :     "m_axi_bid",
    "m_axi_bresp" :     "m_axi_bresp",
    "m_axi_bvalid" :     "m_axi_bvalid",
-   "m_axi_arready" :     "**KEEP**", //"m_axi_arready",
-   "m_axi_rid" :     "**KEEP**", //"m_axi_rid",
-   "m_axi_rdata" :     "**KEEP**", //"m_axi_rdata",
-   "m_axi_rresp" :     "**KEEP**", //"m_axi_rresp",
-   "m_axi_rlast" :     "**KEEP**", //"m_axi_rlast",
-   "m_axi_rvalid" :     "**KEEP**", //"m_axi_rvalid",
+   "m_axi_arready" :     "**KEEP**", 
+   "m_axi_rid" :         "**KEEP**", 
+   "m_axi_rdata" :       "**KEEP**", 
+   "m_axi_rresp" :       "**KEEP**", 
+   "m_axi_rlast" :       "**KEEP**", 
+   "m_axi_rvalid" :      "**KEEP**", 
 
-     "m_axi_aresetn" :           "m_axi_aresetn", // "**NRESET**", // "m_axi_aresetn",
-     "m_axi_aclk"    :           "**CLOCK**"
+    "m_axi_aresetn" :           "m_axi_aresetn", 
+    "m_axi_aclk"    :           "**CLOCK**"
   },
 
-  "mapping control" : [],
+  "mapping control" : [ 
+    "write_valid == m1.awvalid_in",
+    "awlen == 8'b0",
+    "awaddr == m1.wr_dstaddr",
+    "awsize == { 1'b0, m1.wr_datamode[1:0] }",
+    "awburst == 2'b01",
+    "wdata == m1.wdata_aligned",
+    "wstrb == m1.wstrb_aligned"
+
+  ],
 
   "functions":{
-    "unknown0" : [[ "__IEND__", "m1.m_axi_awvalid" ]],
-    "unknown1" : [[ "__IEND__", "m1.m_axi_awid"]],
-    "unknown2" : [[ "__IEND__", "m1.m_axi_awaddr" ]],
-    "unknown3" : [[ "__IEND__", "m_axi_awlen"]],
-    "unknown4" : [[ "__IEND__", "m1.m_axi_awsize" ]],
-    "unknown5" : [[ "__IEND__", "m1.m_axi_awburst"]],    
-    "unknown7" : [[ "__START__", "m1.awvalid_b || m1.awvalid_in" ]],
-    "unknown6" : [[ "__IEND__", "m1.m_axi_awvalid" ]],
-    "unknown8" : [[ "__IEND__", "m1.m_axi_awid" ]],
-    "unknown9" : [[ "__IEND__", "m1.m_axi_awaddr" ]],
-    "unknown10": [[ "__IEND__", "m1.m_axi_awlen"]],
-    "unknown11": [[ "__IEND__", "m1.m_axi_awsize"]],
-    // 12,13,14 should be totally arbitrary, because in verilog there is no such case (and in spec no such case)
-    "unknown15": [[ "__IEND__", "m1.m_axi_wvalid" ]],
-    "unknown16": [[ "__IEND__", "m1.m_axi_wid" ]],
-    "unknown17": [[ "__IEND__", "m1.m_axi_wdata" ]],
-    "unknown18": [[ "__IEND__", "m1.m_axi_wstrb" ]],
-    "unknown19": [[ "__IEND__", "m1.m_axi_wlast" ]],
-    "unknown20": [[ "__IEND__", "m_axi_wid"]],
-    "unknown21": [[ "__IEND__", "m_axi_wdata"]],
-    "unknown22": [[ "__IEND__", "m_axi_wstrb"]],
-    "unknown23": [[ "__IEND__", "m_axi_wlast"]],
-    "unknown25" :[[ "__START__", "m1.wvalid_b || m1.awvalid_in" ]],
-    "unknown24": [[ "__IEND__", "m_axi_wvalid"]]
+    "unknown0" : [[ "__IEND__", "m1.m_axi_awaddr" ]],
+    "unknown1" : [[ "__IEND__", "m1.m_axi_awlen"]],
+    "unknown2" : [[ "__IEND__", "m1.m_axi_awsize" ]],
+    "unknown3" : [[ "__IEND__", "m1.m_axi_awburst"]],
 
+    "unknown4" : [[ "__IEND__", "m1.m_axi_awaddr" ]],
+    "unknown5" : [[ "__IEND__", "m1.m_axi_awlen"]],
+    "unknown6" : [[ "__IEND__", "m1.m_axi_awsize" ]],
+    "unknown7" : [[ "__IEND__", "m1.m_axi_awburst"]],
+
+    "unknown8" :  [[ "__IEND__", "m1.m_axi_wdata"]],
+    "unknown9" :  [[ "__IEND__", "m1.m_axi_wstrb"]],
+    "unknown10" : [[ "__IEND__", "m1.m_axi_wdata"]],
+    "unknown11" : [[ "__IEND__", "m1.m_axi_wstrb"]]
   }
 
 }

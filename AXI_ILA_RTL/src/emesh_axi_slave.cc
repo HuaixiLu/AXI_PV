@@ -167,7 +167,7 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
     instr.SetUpdate(s_axi_bresp, Ite(s_axi_wlast == 1, BvConst(0,2), s_axi_bresp));
     // info update
     instr.SetUpdate(tx_awlen, tx_awlen - BvConst(1,8));
-    instr.SetUpdate(tx_awaddr, Ite(tx_awburst == BvConst(1,2), Concat(Extract(tx_awaddr,31,2) + BvConst(1,30) , BvConst(0,2)), tx_awaddr));
+    instr.SetUpdate(tx_awaddr, Ite(tx_awburst == BURST_INCR, Concat(Extract(tx_awaddr,31,2) + BvConst(1,30) , BvConst(0,2)), tx_awaddr));
   }
 
   // ------ B Channel ----- //
@@ -252,7 +252,7 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
 
   { // R_Slave_Asserted
     auto instr = rmodel.NewInstr("R_Slave_Asserted");
-    instr.SetDecode((s_axi_aresetn_r == 1) & (tx_ractive == 1) & (s_axi_rready == 0) & (s_axi_rvalid == 1) & (s_axi_arready == 0) );
+    instr.SetDecode((s_axi_aresetn_r == 1) & (s_axi_rready == 0) & (s_axi_rvalid == 1));
     instr.SetUpdate(s_axi_rvalid, s_axi_rvalid);
     instr.SetUpdate(s_axi_rdata, s_axi_rdata);
   }
@@ -262,7 +262,7 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
     instr.SetDecode( (s_axi_aresetn_r == 1) & (s_axi_rready == 1) & (s_axi_rvalid == 1) & (tx_ractive == 1) & (s_axi_arready == 0));
     // Compute when to finish reading
     instr.SetUpdate(tx_arlen, tx_arlen - BvConst(1,8));
-    instr.SetUpdate(tx_araddr, Ite(tx_arburst == BvConst(1,2), Concat(Extract(tx_araddr,31,2) + BvConst(1,30) , BvConst(0,2)), tx_araddr));
+    instr.SetUpdate(tx_araddr, Ite(tx_arburst == BURST_INCR, Concat(Extract(tx_araddr,31,2) + BvConst(1,30) , BvConst(0,2)), tx_araddr));
 
     instr.SetUpdate(s_axi_rlast, Ite(tx_arlen == BvConst(1,8), BvConst(1,1), s_axi_rlast));
     instr.SetUpdate(tx_ractive, Ite(s_axi_rlast == BvConst(1,1), BvConst(0,1), tx_ractive));

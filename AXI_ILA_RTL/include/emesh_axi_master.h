@@ -12,6 +12,7 @@
 using namespace ilang;
 
 #define M_IDW 12
+#define DATA_LEN 64
 #define PW 104
 #define AW 32
 #define DW 32
@@ -111,16 +112,28 @@ protected:
   ExprRef m_axi_rready;  // output
   
   // internal state
-  ExprRef tx_valid;
-  ExprRef tx_burst;
-  ExprRef tx_id;
-  ExprRef tx_addr;
-  ExprRef tx_data;
-  ExprRef tx_len;
-  ExprRef tx_size;
-  ExprRef tx_count;
-  ExprRef tx_addr_done;
-  ExprRef tx_data_done;
+  ExprRef tx_wactive;
+  ExprRef tx_bwait;
+  ExprRef tx_awlen;
+
+  ExprRef tx_ractive;
+  ExprRef tx_arlen;
+
+  //Input
+  ExprRef write_valid;
+  ExprRef aw_len;
+  ExprRef aw_addr;
+  ExprRef aw_size;
+  ExprRef aw_burst;
+  ExprRef wdata;
+  ExprRef wstrb;
+
+  ExprRef read_valid;
+  ExprRef ar_len;
+  ExprRef ar_addr;
+  ExprRef ar_size;
+  ExprRef ar_burst;
+  ExprRef read_ready;
 
 }; // class EmeshAxiMasterBridge
 

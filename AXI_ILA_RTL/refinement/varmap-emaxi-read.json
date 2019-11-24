@@ -12,7 +12,9 @@
     "m_axi_arqos"   : "m_axi_arqos"  ,
     "m_axi_arvalid" : "m_axi_arvalid",
 
-    "m_axi_rready"  : "m_axi_rready"
+    "m_axi_rready"  : "m_axi_rready",
+    "tx_ractive": null,
+    "tx_arlen": null
 
   },
 
@@ -56,31 +58,41 @@
    "m_axi_arvalid":    "**SO**",
    "m_axi_rready":    "**SO**",
    // Inputs
-   "m_axi_awready" :     "**KEEP**", // "m_axi_awready",
-   "m_axi_wready" :      "**KEEP**", //"m_axi_wready",
-   "m_axi_bid" :     "**KEEP**", //"m_axi_bid",
-   "m_axi_bresp" :   "**KEEP**", //"m_axi_bresp",
-   "m_axi_bvalid" :  "**KEEP**", //"m_axi_bvalid",
-   "m_axi_arready" : "m_axi_arready", //"m_axi_arready",
-   "m_axi_rid" :     "m_axi_rid",
+   "m_axi_awready" : "**KEEP**", 
+   "m_axi_wready" :  "**KEEP**",
+   "m_axi_bid" :     "**KEEP**",
+   "m_axi_bresp" :   "**KEEP**",
+   "m_axi_bvalid" :  "**KEEP**", 
+   "m_axi_arready" :   "m_axi_arready", 
+   "m_axi_rid" :       "m_axi_rid",
    "m_axi_rdata" :     "m_axi_rdata",
    "m_axi_rresp" :     "m_axi_rresp",
    "m_axi_rlast" :     "m_axi_rlast",
    "m_axi_rvalid" :    "m_axi_rvalid",
 
-     "m_axi_aresetn" :           "m_axi_aresetn", // "**NRESET**", // "m_axi_aresetn",
+     "m_axi_aresetn" :           "m_axi_aresetn",
      "m_axi_aclk"    :           "**CLOCK**"
   },
 
-  "mapping control" : [],
+  "mapping control" : [
+    "read_valid == m1.m_axi_arvalid",
+    "arlen == 8'b0",
+    "araddr == m1.rd_dstaddr",
+    "arsize == { 1'b0, m1.rd_datamode[1:0] }",
+    "arburst == 2'b01",
+    "read_ready == m1.m_axi_rready"
+  ],
 
   "functions":{
-    "unknown26": [[ "__IEND__", "m1.m_axi_arid"]],
-    "unknown27": [[ "__IEND__", "m1.m_axi_araddr"]],
-    "unknown28": [[ "__IEND__", "m1.m_axi_arlen"]],
-    "unknown29": [[ "__IEND__", "m1.m_axi_arsize"]],
-    "unknown30": [[ "__IEND__", "m1.m_axi_arburst"]],
-    "unknown31": [[ "__IEND__", "m1.m_axi_arvalid"]]
+    "unknown12" : [[ "__IEND__", "m1.m_axi_araddr" ]],
+    "unknown13" : [[ "__IEND__", "m1.m_axi_arlen"]],
+    "unknown14" : [[ "__IEND__", "m1.m_axi_arsize" ]],
+    "unknown15" : [[ "__IEND__", "m1.m_axi_arburst"]],
+
+    "unknown16" : [[ "__IEND__", "m1.m_axi_araddr" ]],
+    "unknown17" : [[ "__IEND__", "m1.m_axi_arlen"]],
+    "unknown18" : [[ "__IEND__", "m1.m_axi_arsize" ]],
+    "unknown19" : [[ "__IEND__", "m1.m_axi_arburst"]]
   }
 
 }
