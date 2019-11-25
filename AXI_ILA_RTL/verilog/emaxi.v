@@ -304,7 +304,7 @@ module emaxi(/*autoarg*/
           if( awvalid_in & m_axi_awvalid & ~aw_go )
             awvalid_b <= 1'b1;
           else if( aw_go )
-            awvalid_b <= 1'b0;
+            awvalid_b <= 1'b0; // potential BUG!: which let valid signal to be asserted for one more cycle(ILA), but may just preseve the next info(buffer)
           
          //Pipeline stage
          if( awvalid_in )
@@ -368,7 +368,7 @@ module emaxi(/*autoarg*/
           m_axi_wvalid      <= 1'b0;
           m_axi_wdata[63:0] <= 64'b0;
           m_axi_wstrb[7:0]  <= 8'b0;
-          m_axi_wlast       <= 1'b1; // TODO:bursts!! --- currently no     
+          m_axi_wlast       <= 1'b1; // TODO:bursts!! --- currently no (potential bug!: wlast is never updated!!)
           wvalid_b          <= 1'b0;
           wdata_b[63:0]     <= 64'b0;
           wstrb_b[7:0]      <= 8'b0;         
@@ -394,7 +394,7 @@ module emaxi(/*autoarg*/
          if( wr_access & m_axi_wvalid & ~w_go )
            wvalid_b <= 1'b1;
          else if( w_go )
-           wvalid_b <= 1'b0;
+           wvalid_b <= 1'b0; // potential BUG!: valid may not be asserted for one more cycle! but the aim maybe preserve the next transaction!
           
           if( awvalid_in ) 
             begin

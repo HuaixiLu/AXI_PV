@@ -36,7 +36,7 @@
     }
   ],
   
-  "global invariants": [
+  "global invariants": [ "m1.awvalid_b == m1.wvalid_b"
   ]
 
 }
