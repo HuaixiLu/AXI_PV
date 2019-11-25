@@ -212,7 +212,7 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
 
   { // AR_Mater_Asserted
     auto instr = rmodel.NewInstr("AR_Master_Asserted"); // then it should keep the old value
-    instr.SetDecode( (m_axi_arvalid == 1) & ( m_axi_awready == 0 ) & ( m_axi_aresetn_w == 1 ) ); // should keep its old value
+    instr.SetDecode( (m_axi_arvalid == 1) & ( m_axi_arready == 0 ) & ( m_axi_aresetn_w == 1 ) ); // should keep its old value
 
     instr.SetUpdate(m_axi_arvalid, m_axi_arvalid);
     instr.SetUpdate(m_axi_arid,   m_axi_arid  );
