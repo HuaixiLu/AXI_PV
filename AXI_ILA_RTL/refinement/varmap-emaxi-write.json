@@ -87,7 +87,7 @@
     "awlen == (m1.awvalid_b ? m1.awlen_b : 8'b0)",
     "awaddr == (m1.awvalid_b ? m1.awaddr_b : m1.wr_dstaddr[31:0])",
     "awsize == (m1.awvalid_b ? m1.awsize_b : { 1'b0, m1.wr_datamode[1:0] })",
-    "awburst == (m1.awvalid_b ? m1.awburst_b : 2'b01)",
+    "awburst == 2'b01",
     "wdata == (m1.wvalid_b ? m1.wdata_b[63:0] : m1.wdata_aligned[63:0])",
     "wstrb == (m1.wvalid_b ? m1.wstrb_b[7:0] : m1.wstrb_aligned[7:0])"
 
