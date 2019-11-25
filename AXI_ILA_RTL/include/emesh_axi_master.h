@@ -120,6 +120,7 @@ protected:
   ExprRef tx_arlen;
 
   //Input
+  ExprRef write_addr_valid;
   ExprRef write_valid;
   ExprRef awlen;
   ExprRef awaddr;

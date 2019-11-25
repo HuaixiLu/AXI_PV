@@ -70,6 +70,7 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
   tx_bwait(wmodel.NewBvState("tx_bwait", 1)),
   tx_awlen(wmodel.NewBvState("tx_awlen", 8)),
 
+  write_addr_valid(wmodel.NewBvInput("write_addr_valid", 1)),
   write_valid(wmodel.NewBvInput("write_valid", 1)),
   awlen(wmodel.NewBvInput("awlen", 8)),
   awaddr(wmodel.NewBvInput("awaddr", 32)),
@@ -113,11 +114,11 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
     auto instr = wmodel.NewInstr("AW_Master_Prepare");
     instr.SetDecode( (m_axi_awvalid == 0) & ( m_axi_aresetn_w == 1 ) );
 
-    instr.SetUpdate(m_axi_awvalid, Ite(write_valid == 1, BvConst(1,1), BvConst(0,1)));
-    instr.SetUpdate(m_axi_awaddr,  Ite(write_valid == 1, awaddr, unknownVal(32)));
-    instr.SetUpdate(m_axi_awlen,   Ite(write_valid == 1, awlen, unknownVal(8)));
-    instr.SetUpdate(m_axi_awsize,  Ite(write_valid == 1, awsize, unknownVal(3)));
-    instr.SetUpdate(m_axi_awburst, Ite(write_valid == 1, awburst, unknownVal(2)));
+    instr.SetUpdate(m_axi_awvalid, Ite(write_addr_valid == 1, BvConst(1,1), BvConst(0,1)));
+    instr.SetUpdate(m_axi_awaddr,  Ite(write_addr_valid == 1, awaddr, unknownVal(32)));
+    instr.SetUpdate(m_axi_awlen,   Ite(write_addr_valid == 1, awlen, unknownVal(8)));
+    instr.SetUpdate(m_axi_awsize,  Ite(write_addr_valid == 1, awsize, unknownVal(3)));
+    instr.SetUpdate(m_axi_awburst, Ite(write_addr_valid == 1, awburst, unknownVal(2)));
   }
 
   { // AW_Mater_Asserted
@@ -139,11 +140,11 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
     instr.SetUpdate(tx_awlen,   m_axi_awlen);
     instr.SetUpdate(tx_wactive, BvConst(1,1));
 
-    instr.SetUpdate(m_axi_awvalid, Ite(write_valid == 1, BvConst(1,1), BvConst(0,1)));
-    instr.SetUpdate(m_axi_awaddr,  Ite(write_valid == 1, awaddr, unknownVal(32)));
-    instr.SetUpdate(m_axi_awlen,   Ite(write_valid == 1, awlen, unknownVal(8)));
-    instr.SetUpdate(m_axi_awsize,  Ite(write_valid == 1, awsize, unknownVal(3)));
-    instr.SetUpdate(m_axi_awburst, Ite(write_valid == 1, awburst, unknownVal(2)));
+    instr.SetUpdate(m_axi_awvalid, Ite(write_addr_valid == 1, BvConst(1,1), BvConst(0,1)));
+    instr.SetUpdate(m_axi_awaddr,  Ite(write_addr_valid == 1, awaddr, unknownVal(32)));
+    instr.SetUpdate(m_axi_awlen,   Ite(write_addr_valid == 1, awlen, unknownVal(8)));
+    instr.SetUpdate(m_axi_awsize,  Ite(write_addr_valid == 1, awsize, unknownVal(3)));
+    instr.SetUpdate(m_axi_awburst, Ite(write_addr_valid == 1, awburst, unknownVal(2)));
 
     instr.SetUpdate(m_axi_rlast, Ite(awlen == BvConst(0,8), BvConst(1,1), BvConst(0,1)) );
   }
