@@ -37,6 +37,7 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
   s_axi_bresp (wmodel.NewBvState("s_axi_bresp",  2)),     // output 
   s_axi_bvalid(wmodel.NewBvState("s_axi_bvalid", 1)),     // output
   s_axi_bready(wmodel.NewBvInput("s_axi_bready", 1)), 
+  write_ready (wmodel.NewBvInput("write_ready", 1)), // Input
 
   rmodel("EmeshAxiSlaveBridge_read"),
   
@@ -152,14 +153,14 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
   { // W_Slave_Wait
     auto instr = wmodel.NewInstr("W_Slave_Wait"); 
     instr.SetDecode( (tx_wactive == 1) & (s_axi_wready == 0) & ( s_axi_aresetn_w == 1 ) );
-    instr.SetUpdate(s_axi_wready, unknownVal(1)); // unkownVal == ~wr_wait
+    instr.SetUpdate(s_axi_wready, write_ready);
   }
 
   { // W_Slave_Busy
     auto instr = wmodel.NewInstr("W_Slave_Busy"); 
     instr.SetDecode( (tx_wactive == 1) & (s_axi_wready == 1) & (s_axi_wvalid == 1) & (s_axi_bvalid == 0) & (s_axi_awready == 0) & ( s_axi_aresetn_w == 1 ));
     // tx_wactive ----- last_wr_beat : two important points
-    instr.SetUpdate(s_axi_wready, Ite(s_axi_wlast == 1, BvConst(0,1), unknownVal(1))); // unkownVal == ~wr_wait
+    instr.SetUpdate(s_axi_wready, Ite(s_axi_wlast == 1, BvConst(0,1), write_ready)); 
     instr.SetUpdate(tx_wactive, Ite(s_axi_wlast == 1, BvConst(0,1), tx_wactive));
     instr.SetUpdate(tx_bwait, Ite(s_axi_wlast == 1, ~s_axi_bready, tx_bwait));
     instr.SetUpdate(s_axi_bvalid, Ite(s_axi_wlast == 1, BvConst(1,1), s_axi_bvalid));
