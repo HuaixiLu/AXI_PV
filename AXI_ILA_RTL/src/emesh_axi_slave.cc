@@ -37,8 +37,7 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
   s_axi_bresp (wmodel.NewBvState("s_axi_bresp",  2)),     // output 
   s_axi_bvalid(wmodel.NewBvState("s_axi_bvalid", 1)),     // output
   s_axi_bready(wmodel.NewBvInput("s_axi_bready", 1)), 
-
-  write_valid (wmodel.NewBvInput("write_valid",     1)), // Input
+  write_valid (wmodel.NewBvInput("write_valid", 1)), // Input
 
   rmodel("EmeshAxiSlaveBridge_read"),
   
