@@ -7,7 +7,7 @@
 
 EmeshAxiMasterBridge::EmeshAxiMasterBridge()
     : // construct the model
-  wmodel("EmeshAxiMasterBridge_write"),
+  wmodel("ILA_Master_write"),
   // global reset
   m_axi_aresetn_w (wmodel.NewBvInput("m_axi_aresetn",1)),
 

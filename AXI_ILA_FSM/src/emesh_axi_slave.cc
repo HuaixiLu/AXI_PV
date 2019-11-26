@@ -7,7 +7,7 @@
 
 EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
     : // construct the model
-  wmodel("EmeshAxiSlaveBridge_write"),
+  wmodel("ILA_Slave_write"),
   // global reset
   s_axi_aresetn_w (wmodel.NewBvInput("s_axi_aresetn",1)),
 

@@ -477,7 +477,7 @@ module esaxi (/*autoarg*/
 	   begin
               s_axi_rvalid <= 1'b1;
               s_axi_rresp  <= rr_timeout_access ? 2'b10 : 2'b00;
-            case( axi_arsize[1:0] )
+            case( axi_arsize[1:0] ) // potential BUG!: rdata should be asserted and stable when valid signal is asserted!
               2'b00:   s_axi_rdata[31:0] <= {4{rr_return_data[7:0]}};  //8-bit
               2'b01:   s_axi_rdata[31:0] <= {2{rr_return_data[15:0]}}; //16-bit
               default: s_axi_rdata[31:0] <= rr_return_data[31:0];      //32-bit
