@@ -117,7 +117,7 @@ protected:
   ExprRef s_axi_bresp;  //output
   ExprRef s_axi_bvalid; //output
   ExprRef s_axi_bready;
-
+  ExprRef write_ready;
   // internal state
   ExprRef tx_wactive;
   ExprRef tx_bwait;
@@ -134,7 +134,7 @@ protected:
 
   // Data Input
   ExprRef read_valid;
-  ExprRef write_ready;
+
   ExprRef read_data_7_0;
   ExprRef read_data_15_0;
   ExprRef read_data_31_0;
