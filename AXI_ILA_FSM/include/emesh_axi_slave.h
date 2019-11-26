@@ -134,7 +134,6 @@ protected:
 
   // Data Input
   ExprRef read_valid;
-  ExprRef write_ready;
   ExprRef read_data_7_0;
   ExprRef read_data_15_0;
   ExprRef read_data_31_0;

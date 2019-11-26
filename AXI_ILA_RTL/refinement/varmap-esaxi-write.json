@@ -75,11 +75,11 @@
    "s_axi_aclk"    :           "**CLOCK**"
   },
 
-  "mapping control" : [],
+  "mapping control" : [
+    "write_ready == ~m1.wr_wait"
+  ],
 
   "functions":{
-    "unknown0" : [[ "__IEND__", "m1.s_axi_wready" ]],
-    "unknown1" : [[ "__IEND__", "m1.s_axi_wready"]]
   }
 
 }
