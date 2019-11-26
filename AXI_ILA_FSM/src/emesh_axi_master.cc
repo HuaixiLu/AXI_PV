@@ -146,7 +146,7 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
     instr.SetUpdate(m_axi_awsize,  Ite(write_addr_valid == 1, awsize, unknownVal(3)));
     instr.SetUpdate(m_axi_awburst, Ite(write_addr_valid == 1, awburst, unknownVal(2)));
 
-    instr.SetUpdate(m_axi_rlast, Ite(awlen == BvConst(0,8), BvConst(1,1), BvConst(0,1)) );
+    instr.SetUpdate(m_axi_wlast, Ite(awlen == BvConst(0,8), BvConst(1,1), BvConst(0,1)) );
   }
 
   { // W_Master_Prepare
