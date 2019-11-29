@@ -103,11 +103,11 @@ int main(int argc, char **argv) {
   EmeshAxiMasterBridge emaxi;
   EmeshAxiSlaveBridge esaxi;
 
-  verifyAxiMasterRW(emaxi.wmodel, vtg_cfg, design_files, "varmap-emaxi-write.json", "instcond-emaxi-write.json");
-  verifyAxiMasterRW(emaxi.rmodel, vtg_cfg, design_files, "varmap-emaxi-read.json",  "instcond-emaxi-read.json");
+  //verifyAxiMasterRW(emaxi.wmodel, vtg_cfg, design_files, "varmap-emaxi-write.json", "instcond-emaxi-write.json");
+  //verifyAxiMasterRW(emaxi.rmodel, vtg_cfg, design_files, "varmap-emaxi-read.json",  "instcond-emaxi-read.json");
 
-  verifyAxiSlaveRW(esaxi.wmodel, vtg_cfg, design_files, "varmap-esaxi-write.json", "instcond-esaxi-write.json");
-  verifyAxiSlaveRW(esaxi.rmodel, vtg_cfg, design_files, "varmap-esaxi-read.json",  "instcond-esaxi-read.json");
+  //verifyAxiSlaveRW(esaxi.wmodel, vtg_cfg, design_files, "varmap-esaxi-write.json", "instcond-esaxi-write.json");
+  //verifyAxiSlaveRW(esaxi.rmodel, vtg_cfg, design_files, "varmap-esaxi-read.json",  "instcond-esaxi-read.json");
 
   
   std::string verilog_file_name = "esaxi_w.v";
