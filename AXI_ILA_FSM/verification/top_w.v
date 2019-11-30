@@ -105,7 +105,7 @@ module Write_Channel #(parameter IDW =  12, // ID
         .tx_awlen ()
    );
 
-ILA_Slave_write s_w(
+ILA_Slave_Write s_w(
         .__ILA_ILA_Slave_write_grant__ (),
         .clk    (clk),
         .rst    (),
@@ -150,4 +150,4 @@ ILA_Slave_write s_w(
         .tx_awburst ()
 );
 
-endmodule
+endmodules
