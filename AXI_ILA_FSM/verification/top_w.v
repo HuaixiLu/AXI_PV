@@ -94,7 +94,7 @@ module Write_Channel #(parameter IDW =  12, // ID
         .m_axi_awqos    (),
         .m_axi_awvalid  (axi_awvalid),
 
-        .m_axi_wid,
+        .m_axi_wid (),
         .m_axi_wdata    (axi_wdata),
         .m_axi_wstrb    (axi_wstrb),
         .m_axi_wlast    (axi_wlast),
