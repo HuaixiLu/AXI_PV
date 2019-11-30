@@ -24,7 +24,7 @@ module wrapper #(parameter IDW =  12, // ID
     input             wvalid_in,
     input             wready_in,
     //Write response channel
-    input             bready_in,
+    input             bready_in
 
 );
 
@@ -65,7 +65,10 @@ wire            ila_axi_bvalid;  // channel is a valid write response
 wire            ila_axi_bready; // master can accept write response.
 
 
-axi_protocol fsm(
+axi_protocol #( .IDW(104), 
+                .AW(32),
+                .DW(32) )
+fsm(
     .axi_aclk (clk),
     .axi_aresetn (resetn),
     
@@ -113,7 +116,10 @@ axi_protocol fsm(
     .axi_rready()
 );
 
-Write_Channel ila(
+Write_Channel #( .IDW(104), 
+                .AW(32),
+                .DW(32) )
+ila(
     .clk (clk),
     .resetn (resetn),
     
