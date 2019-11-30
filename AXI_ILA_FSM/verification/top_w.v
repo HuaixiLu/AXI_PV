@@ -150,4 +150,4 @@ ILA_Slave_write s_w(
         .tx_awburst ()
 );
 
-endmodules
+endmodule
