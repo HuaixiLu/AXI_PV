@@ -1,45 +1,46 @@
-module Write_Channel #( parameter IDW 12, // ID
-                       parameter AW 32, // Addr
-                       parameter DW 32 
-                        )
+module Write_Channel 
    (
-   input              clk;    // global clock signal.
-   input              resetn; // global reset singal.
+   input              clk,   // global clock signal.
+   input              resetn, // global reset singal.
 
    //Write address channel
-   input  [AW-1 : 0] awaddr_in;
-   input  [7 : 0]    awlen_in;
-   input  [2 : 0]    awsize_in;
-   input  [1 : 0]    awburst_in;
-   input             awvalid_in;
+   input  [AW-1 : 0] awaddr_in,
+   input  [7 : 0]    awlen_in,
+   input  [2 : 0]    awsize_in,
+   input  [1 : 0]    awburst_in,
+   input             awvalid_in,
 
-   output [AW-1 : 0] axi_awaddr;  // master interface write address   
-   output [7 : 0]    axi_awlen;   // burst length.
-   output [2 : 0]    axi_awsize;  // burst size.
-   output [1 : 0]    axi_awburst; // burst type.
-   output            axi_awvalid; // write address valid
-   output            axi_awready; // write address ready
+   output [AW-1 : 0] axi_awaddr,  // master interface write address   
+   output [7 : 0]    axi_awlen,  // burst length.
+   output [2 : 0]    axi_awsize,  // burst size.
+   output [1 : 0]    axi_awburst, // burst type.
+   output            axi_awvalid, // write address valid
+   output            axi_awready, // write address ready
 
    //Write data channel
-   input  [63 : 0]   wdata_in;
-   input  [7 : 0]    wstrb_in;
-   input             wvalid_in;
-   input             wready_in;
+   input  [63 : 0]   wdata_in,
+   input  [7 : 0]    wstrb_in,
+   input             wvalid_in,
+   input             wready_in,
 
-   output [63 : 0]   axi_wdata;   // master interface write data.
-   output [7 : 0]    axi_wstrb;   // byte write strobes
-   output            axi_wlast;   // last transfer in a write burst.
-   output            axi_wvalid;  // indicates data is ready to go
-   output            axi_wready;  // slave is ready for data
+   output [63 : 0]   axi_wdata,   // master interface write data.
+   output [7 : 0]    axi_wstrb,   // byte write strobes
+   output            axi_wlast,   // last transfer in a write burst.
+   output            axi_wvalid,  // indicates data is ready to go
+   output            axi_wready,  // slave is ready for data
 
    //Write response channel
-   input             bready_in;
-   output [1 : 0]    axi_bresp;   // status of the write transaction.
-   output            axi_bvalid;  // channel is a valid write response
-   output            axi_bready;  // master can accept write response.
+   input             bready_in,
+   output [1 : 0]    axi_bresp,   // status of the write transaction.
+   output            axi_bvalid,  // channel is a valid write response
+   output            axi_bready  // master can accept write response.
    );
 
-   ILA_Master_Write m_w (
+    parameter IDW =  12; // ID
+    parameter AW  =  32; // Addr
+    parameter DW  =  32; 
+                        
+    ILA_Master_Write m_w (
         .__ILA_ILA_Master_write_grant__ (),
         .awaddr     (awaddr_in),
         .awburst    (awburst_in),
