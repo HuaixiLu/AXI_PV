@@ -100,7 +100,7 @@ fsm(
     
     .axi_bresp (fsm_axi_bresp), 
     .axi_bvalid (fsm_axi_bvalid), 
-    .axi_bready (fsm_axi_bready)
+    .axi_bready (fsm_axi_bready),
 
     .axi_araddr (), 
     .axi_arlen (),
