@@ -229,6 +229,7 @@ begin
                     axi_wready <= 1'b1;
                     if (axi_awlen == 8'b0) axi_wlast <= 1'b1;
                 end
+        endcase
     end
 end
 
@@ -274,6 +275,7 @@ begin
                 axi_bready <= 1'b1;
                 b_state <= COMMIT;
             end
+        endcase
     end
 end
 
