@@ -30,12 +30,12 @@ module axi_protocol (
    input  [1 : 0]    awburst_in;
    input             awvalid_in;
 
-   output [AW-1 : 0] axi_awaddr;  // master interface write address   
-   output [7 : 0]    axi_awlen;   // burst length.
-   output [2 : 0]    axi_awsize;  // burst size.
-   output [1 : 0]    axi_awburst; // burst type.
-   output            axi_awvalid; // write address valid
-   output            axi_awready; // write address ready
+   output reg [AW-1 : 0] axi_awaddr;  // master interface write address   
+   output reg [7 : 0]    axi_awlen;   // burst length.
+   output reg [2 : 0]    axi_awsize;  // burst size.
+   output reg [1 : 0]    axi_awburst; // burst type.
+   output reg           axi_awvalid; // write address valid
+   output reg            axi_awready; // write address ready
 
    //Write data channel
    input  [63 : 0]   wdata_in;
@@ -43,32 +43,32 @@ module axi_protocol (
    input             wvalid_in;
    input             wready_in;
 
-   output [63 : 0]   axi_wdata;   // master interface write data.
-   output [7 : 0]    axi_wstrb;   // byte write strobes
-   output            axi_wlast;   // last transfer in a write burst.
-   output            axi_wvalid;  // indicates data is ready to go
-   output            axi_wready;  // slave is ready for data
+   output reg [63 : 0]   axi_wdata;   // master interface write data.
+   output reg [7 : 0]    axi_wstrb;   // byte write strobes
+   output reg            axi_wlast;   // last transfer in a write burst.
+   output reg            axi_wvalid;  // indicates data is ready to go
+   output reg            axi_wready;  // slave is ready for data
 
    //Write response channel
    input             bready_in;
-   output [1 : 0]    axi_bresp;   // status of the write transaction.
-   output            axi_bvalid;  // channel is a valid write response
-   output            axi_bready;  // master can accept write response.
+   output reg [1 : 0]    axi_bresp;   // status of the write transaction.
+   output reg            axi_bvalid;  // channel is a valid write response
+   output reg            axi_bready;  // master can accept write response.
 
    //Read address channel
-   output [AW-1 :0]  axi_araddr;  // initial address of a read burst
-   output [7 : 0]    axi_arlen;   // burst length
-   output [2 : 0]    axi_arsize;  // burst size
-   output [1 : 0]    axi_arburst; // burst type
-   output            axi_arvalid; // valid read address
-   output            axi_arready; // slave is ready to accept an address
+   output reg [AW-1 :0]  axi_araddr;  // initial address of a read burst
+   output reg [7 : 0]    axi_arlen;   // burst length
+   output reg [2 : 0]    axi_arsize;  // burst size
+   output reg [1 : 0]    axi_arburst; // burst type
+   output reg            axi_arvalid; // valid read address
+   output reg            axi_arready; // slave is ready to accept an address
 
    //Read data channel   
-   output [63 : 0]   axi_rdata;   // master read data
-   output [1 : 0]    axi_rresp;   // status of the read transfer
-   output            axi_rlast;   // last transfer in a read burst
-   output            axi_rvalid;  // signaling the required read data
-   output            axi_rready;  // master can accept the readback data
+   output reg [63 : 0]   axi_rdata;   // master read data
+   output reg [1 : 0]    axi_rresp;   // status of the read transfer
+   output reg            axi_rlast;   // last transfer in a read burst
+   output reg            axi_rvalid;  // signaling the required read data
+   output reg            axi_rready;  // master can accept the readback data
 
 localparam WAIT   = 2'b00;
 localparam COMMIT = 2'b01; // ready == 1 && valid == 1
