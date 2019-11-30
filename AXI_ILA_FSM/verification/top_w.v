@@ -1,4 +1,6 @@
-module Write_Channel 
+module Write_Channel #(parameter IDW =  12, // ID
+    parameter AW  =  32, // Addr
+    parameter DW  =  32 )
    (
    input              clk,   // global clock signal.
    input              resetn, // global reset singal.
@@ -35,9 +37,6 @@ module Write_Channel
    output reg            axi_bready  // master can accept write response.
    );
 
-    parameter IDW =  12; // ID
-    parameter AW  =  32; // Addr
-    parameter DW  =  32; 
                         
     ILA_Master_Write m_w (
         .__ILA_ILA_Master_write_grant__ (),
