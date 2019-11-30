@@ -87,7 +87,7 @@ reg [2  : 0] aw_size;
 reg [1  : 0] aw_burst;
 reg [1:0] aw_state;
 
-always @(posedge axi_aclk) begin
+always @(posedge axi_aclk) 
     if(!axi_aresetn) begin
         axi_awvalid <= 1'b0;        
         axi_awready <= 1'b1;
@@ -146,9 +146,8 @@ always @(posedge axi_aclk) begin
                         axi_awready <= 1'b1;
                         aw_state <= COMMIT;
                     end
+        endcase
     end
-end
-
 // -----------------//
 //  W Channel FSM  //
 // -----------------//
