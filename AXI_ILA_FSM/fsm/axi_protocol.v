@@ -16,9 +16,9 @@ module axi_protocol (
     axi_rdata, axi_rresp, axi_rlast, axi_rvalid, axi_rready
 )
 
-    parameter IDW 12, // ID
-    parameter AW 32, // Addr
-    parameter DW 32 
+    parameter IDW 12; // ID
+    parameter AW 32; // Addr
+    parameter DW 32; 
                         
    input              axi_aclk;    // global clock signal.
    input              axi_aresetn; // global reset singal.
