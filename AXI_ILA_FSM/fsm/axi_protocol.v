@@ -87,7 +87,7 @@ reg [2  : 0] aw_size;
 reg [1  : 0] aw_burst;
 reg [1:0] aw_state;
 
-always @(posedge axi_aclk)
+always @(posedge axi_aclk) begin
     if(!axi_aresetn) begin
         axi_awvalid <= 1'b0;        
         axi_awready <= 1'b1;
@@ -146,8 +146,8 @@ always @(posedge axi_aclk)
                         axi_awready <= 1'b1;
                         aw_state <= COMMIT;
                     end
-            default:
     end
+end
 
 // -----------------//
 //  W Channel FSM  //
@@ -157,6 +157,7 @@ always @(posedge axi_aclk)
 reg [1:0] w_state;
 
 always @(posedge axi_aclk)
+begin
     if(!axi_aresetn) begin
         axi_wvalid <= 1'b0;
         axi_wlast <= 1'b0;
@@ -230,6 +231,7 @@ always @(posedge axi_aclk)
                     if (axi_awlen == 8'b0) axi_wlast <= 1'b1;
                 end
     end
+end
 
 // -----------------//
 //  B Channel FSM  //
@@ -239,6 +241,7 @@ always @(posedge axi_aclk)
 reg [1:0] b_state;
 
 always @(posedge axi_aclk)
+begin
     if(!axi_aresetn) begin
         axi_bvalid <= 1'b0;
         b_state <= WAIT;
@@ -273,6 +276,7 @@ always @(posedge axi_aclk)
                 b_state <= COMMIT;
             end
     end
+end
 
 endmodule // axi_protocol
 
