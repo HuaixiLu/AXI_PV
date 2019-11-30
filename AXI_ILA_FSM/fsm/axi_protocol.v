@@ -4,11 +4,22 @@
 //# Author:   Huaixi Lu                                                       #
 //# Email:    huaixil@princeton.edu                                           # 
 //#############################################################################
-module axi_protocol #( parameter IDW 12, // ID
-                       parameter AW 32, // Addr
-                       parameter DW 32 
-                        )
-   (
+module axi_protocol (
+    axi_aclk,axi_aresetn,
+    awaddr_in, awburst_in, awlen_in, awsize_in, awvalid_in,
+    axi_awaddr, axi_awlen, axi_awsize, axi_awburst, axi_awvalid, axi_awready,
+    wdata_in, wstrb_in, wvalid_in, wready_in,
+    axi_wdata, axi_wlast, axi_wstrb, axi_wvalid, axi_wready,
+    bready_in, axi_bresp, axi_bvalid, axi_bready,
+
+    axi_araddr, axi_arlen,axi_arsize, axi_arburst, axi_arvalid, axi_arready, 
+    axi_rdata, axi_rresp, axi_rlast, axi_rvalid, axi_rready
+)
+
+    parameter IDW 12, // ID
+    parameter AW 32, // Addr
+    parameter DW 32 
+                        
    input              axi_aclk;    // global clock signal.
    input              axi_aresetn; // global reset singal.
 
@@ -58,7 +69,6 @@ module axi_protocol #( parameter IDW 12, // ID
    output            axi_rlast;   // last transfer in a read burst
    output            axi_rvalid;  // signaling the required read data
    output            axi_rready;  // master can accept the readback data
-);
 
 localparam WAIT   = 2'b00;
 localparam COMMIT = 2'b01; // ready == 1 && valid == 1
