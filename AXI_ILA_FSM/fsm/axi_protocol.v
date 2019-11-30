@@ -107,12 +107,14 @@ always @(posedge axi_aclk)
                         axi_awlen   <= awlen_in; 
                         axi_awsize  <= awsize_in;
                         axi_awburst <= awburst_in;
+                    end
                     else if (awvalid_in) begin
                         aw_state <= ASSERT;
                         axi_awaddr  <= awaddr_in;
                         axi_awlen   <= awlen_in; 
                         axi_awsize  <= awsize_in;
                         axi_awburst <= awburst_in;
+                    end
                     else if (~w_active && ~b_wait)
                         axi_awready <= 1'b1;
                 end
