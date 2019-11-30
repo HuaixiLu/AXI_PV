@@ -2,7 +2,6 @@ module Write_Channel
    (
    input              clk,   // global clock signal.
    input              resetn, // global reset singal.
-
    //Write address channel
    input  [AW-1 : 0] awaddr_in,
    input  [7 : 0]    awlen_in,
@@ -10,12 +9,12 @@ module Write_Channel
    input  [1 : 0]    awburst_in,
    input             awvalid_in,
 
-   output [AW-1 : 0] axi_awaddr,  // master interface write address   
-   output [7 : 0]    axi_awlen,  // burst length.
-   output [2 : 0]    axi_awsize,  // burst size.
-   output [1 : 0]    axi_awburst, // burst type.
-   output            axi_awvalid, // write address valid
-   output            axi_awready, // write address ready
+   output reg [AW-1 : 0] axi_awaddr,  // master interface write address   
+   output reg [7 : 0]    axi_awlen,  // burst length.
+   output reg [2 : 0]    axi_awsize,  // burst size.
+   output reg [1 : 0]    axi_awburst, // burst type.
+   output reg            axi_awvalid, // write address valid
+   output reg            axi_awready, // write address ready
 
    //Write data channel
    input  [63 : 0]   wdata_in,
@@ -23,17 +22,17 @@ module Write_Channel
    input             wvalid_in,
    input             wready_in,
 
-   output [63 : 0]   axi_wdata,   // master interface write data.
-   output [7 : 0]    axi_wstrb,   // byte write strobes
-   output            axi_wlast,   // last transfer in a write burst.
-   output            axi_wvalid,  // indicates data is ready to go
-   output            axi_wready,  // slave is ready for data
+   output reg [63 : 0]   axi_wdata,   // master interface write data.
+   output reg [7 : 0]    axi_wstrb,   // byte write strobes
+   output reg            axi_wlast,   // last transfer in a write burst.
+   output reg            axi_wvalid,  // indicates data is ready to go
+   output reg            axi_wready,  // slave is ready for data
 
    //Write response channel
    input             bready_in,
-   output [1 : 0]    axi_bresp,   // status of the write transaction.
-   output            axi_bvalid,  // channel is a valid write response
-   output            axi_bready  // master can accept write response.
+   output reg [1 : 0]    axi_bresp,   // status of the write transaction.
+   output reg            axi_bvalid,  // channel is a valid write response
+   output reg            axi_bready  // master can accept write response.
    );
 
     parameter IDW =  12; // ID
