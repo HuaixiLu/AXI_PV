@@ -95,7 +95,9 @@ always @(posedge axi_aclk)
         b_wait <= 1'b0;
         aw_state <= WAIT;                
     end
-    else begin
+    else 
+    
+    begin
         case(aw_state)
             WAIT:
                 begin
@@ -144,6 +146,7 @@ always @(posedge axi_aclk)
                         axi_awready <= 1'b1;
                         aw_state <= COMMIT;
                     end
+            default:
     end
 
 // -----------------//
