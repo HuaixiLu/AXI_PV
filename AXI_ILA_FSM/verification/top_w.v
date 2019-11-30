@@ -38,7 +38,7 @@ module Write_Channel #(parameter IDW =  12, // ID
    );
 
                         
-    ILA_Master_Write m_w (
+    ILA_Master_write m_w (
         .__ILA_ILA_Master_write_grant__ (),
         .awaddr     (awaddr_in),
         .awburst    (awburst_in),
@@ -105,7 +105,7 @@ module Write_Channel #(parameter IDW =  12, // ID
         .tx_awlen ()
    );
 
-ILA_Slave_Write s_w(
+ILA_Slave_write s_w(
         .__ILA_ILA_Slave_write_grant__ (),
         .clk    (clk),
         .rst    (),
