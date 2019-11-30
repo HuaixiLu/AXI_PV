@@ -14,7 +14,7 @@ module axi_protocol (
 
     axi_araddr, axi_arlen,axi_arsize, axi_arburst, axi_arvalid, axi_arready, 
     axi_rdata, axi_rresp, axi_rlast, axi_rvalid, axi_rready
-)
+);
 
     parameter IDW 12; // ID
     parameter AW 32; // Addr
