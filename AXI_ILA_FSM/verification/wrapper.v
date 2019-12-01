@@ -108,9 +108,6 @@ fsm(
     .axi_bvalid (fsm_axi_bvalid), 
     .axi_bready (fsm_axi_bready),
 
-    .w_active (w_active),
-    .b_wait (b_wait),
-
     .axi_araddr (), 
     .axi_arlen (),
     .axi_arsize (), 
