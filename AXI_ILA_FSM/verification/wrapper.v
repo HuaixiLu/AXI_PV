@@ -10,7 +10,7 @@ module wrapper #(parameter IDW =  12, // ID
 (
 
     input              clk,   // global clock signal.
-    input              resetn, // global reset singal.
+    input              rst, // global reset singal.
     //Write address channel
     input  [AW-1 : 0] awaddr_in,
     input  [7 : 0]    awlen_in,
@@ -64,6 +64,9 @@ wire [1 : 0]    ila_axi_bresp;  // status of the write transaction.
 wire            ila_axi_bvalid;  // channel is a valid write response
 wire            ila_axi_bready; // master can accept write response.
 
+wire resetn;
+
+assign resetn = ~rst;
 
 axi_protocol #( .IDW(104), 
                 .AW(32),
