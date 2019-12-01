@@ -137,8 +137,10 @@ always @(posedge axi_aclk)
                         axi_awsize  <= awsize_in;
                         axi_awburst <= awburst_in;
                     end
-                    else
+                    else begin
+                        axi_wvalid <= 1'b0;
                         aw_state <= WAIT;
+                    end
                 end
             
             ASSERT:
