@@ -73,7 +73,7 @@ axi_protocol #( .IDW(104),
                 .DW(32) )
 fsm(
     .axi_aclk (clk),
-    .axi_aresetn (resetn),
+    .axi_reset (rst),
     
     .awaddr_in (awaddr_in), 
     .awburst_in (awburst_in), 

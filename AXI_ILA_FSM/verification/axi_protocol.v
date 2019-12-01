@@ -5,7 +5,7 @@
 //# Email:    huaixil@princeton.edu                                           # 
 //#############################################################################
 module axi_protocol (
-    axi_aclk,axi_aresetn,
+    axi_aclk,axi_reset,
     awaddr_in, awburst_in, awlen_in, awsize_in, awvalid_in,
     axi_awaddr, axi_awlen, axi_awsize, axi_awburst, axi_awvalid, axi_awready,
     wdata_in, wstrb_in, wvalid_in, wready_in,
@@ -21,7 +21,7 @@ module axi_protocol (
     parameter DW  = 32; 
                         
    input              axi_aclk;    // global clock signal.
-   input              axi_aresetn; // global reset singal.
+   input              axi_reset; // global reset singal.
 
    //Write address channel
    input  [AW-1 : 0] awaddr_in;
@@ -88,7 +88,8 @@ reg [1  : 0] aw_burst;
 reg [1:0] aw_state;
 
 always @(posedge axi_aclk) 
-    if(!axi_aresetn) begin
+begin
+    if(axi_reset) begin
         axi_awvalid <= 1'b0;        
         axi_awready <= 1'b1;
         w_active <= 1'b0;
@@ -150,6 +151,7 @@ always @(posedge axi_aclk)
                     end
         endcase
     end
+end
 // -----------------//
 //  W Channel FSM  //
 // -----------------//
@@ -159,7 +161,7 @@ reg [1:0] w_state;
 
 always @(posedge axi_aclk)
 begin
-    if(!axi_aresetn) begin
+    if(axi_reset) begin
         axi_wvalid <= 1'b0;
         axi_wlast <= 1'b0;
         w_state <= WAIT;
@@ -244,7 +246,7 @@ reg [1:0] b_state;
 
 always @(posedge axi_aclk)
 begin
-    if(!axi_aresetn) begin
+    if(axi_reset) begin
         axi_bvalid <= 1'b0;
         b_state <= WAIT;
     end
