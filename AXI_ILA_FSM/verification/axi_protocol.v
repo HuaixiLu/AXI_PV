@@ -118,18 +118,20 @@ begin
                         axi_awsize  <= awsize_in;
                         axi_awburst <= awburst_in;
                     end
-                    else if (~w_active && ~b_wait)
+                    else if (~w_active && ~b_wait) begin
                         axi_awready <= 1'b1;
+                    end
                 end
 
             COMMIT:
                 begin
-                    w_active <= 1'b1;
+                    
                     axi_awready <= 1'b0;
                     aw_addr  <= axi_awaddr;
                     aw_len   <= axi_awlen; 
                     aw_size  <= axi_awsize;
                     aw_burst <= axi_awburst;
+                    w_active <= 1'b1;
                     if (awvalid_in) begin 
                         aw_state <= ASSERT;
                         axi_awvalid <= 1'b1;
