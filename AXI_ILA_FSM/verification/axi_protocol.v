@@ -167,6 +167,7 @@ begin
         axi_wvalid <= 1'b0;
         axi_wlast <= 1'b0;
         w_state <= WAIT;
+        w_active <= 1'b0;
     end
     else begin
         case(w_state)
