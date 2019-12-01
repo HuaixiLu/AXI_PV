@@ -87,17 +87,25 @@ reg [2  : 0] aw_size;
 reg [1  : 0] aw_burst;
 reg [1:0] aw_state;
 
+always @(posedge axi_aclk) begin
+if (rst) begin
+    w_active <= 1'b0;
+end
+else begin
+    if(aw_state == COMMIT)
+        w_active <= 1'b1;
+    else if (w_state == COMMIT && axi_wlast == 1'b1)
+        w_active <= 1'b0;
+end
+
 always @(posedge axi_aclk) 
 begin
     if(rst) begin
         axi_awvalid <= 1'b0;        
         axi_awready <= 1'b1;
-        w_active <= 1'b0;
-        b_wait <= 1'b0;
         aw_state <= WAIT;                
     end
     else 
-    
     begin
         case(aw_state)
             WAIT:
@@ -125,13 +133,11 @@ begin
 
             COMMIT:
                 begin
-                    
                     axi_awready <= 1'b0;
                     aw_addr  <= axi_awaddr;
                     aw_len   <= axi_awlen; 
                     aw_size  <= axi_awsize;
                     aw_burst <= axi_awburst;
-                    w_active <= 1'b1;
                     if (awvalid_in) begin 
                         aw_state <= ASSERT;
                         axi_awvalid <= 1'b1;
@@ -167,8 +173,6 @@ begin
         axi_wvalid <= 1'b0;
         axi_wlast <= 1'b0;
         w_state <= WAIT;
-        w_active <= 1'b0;
-        b_wait <= 1'b0;
     end
     else begin
         case(w_state)
@@ -217,7 +221,6 @@ begin
                     aw_len <= aw_len - 1'b1;
                     if (aw_len == 1'b1) axi_wlast <= 1'b1;
                     if (axi_wlast == 1'b1) begin
-                        w_active <= 1'b0;
                         axi_wready <= 1'b0;
                         if (wvalid_in) begin
                             w_state <= ASSERT;
@@ -252,6 +255,7 @@ always @(posedge axi_aclk)
 begin
     if(rst) begin
         axi_bvalid <= 1'b0;
+        b_wait <= 1'b0;
         b_state <= WAIT;
     end
     else begin
