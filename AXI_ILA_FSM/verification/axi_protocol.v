@@ -88,14 +88,15 @@ reg [1  : 0] aw_burst;
 reg [1:0] aw_state;
 
 always @(posedge axi_aclk) begin
-if (rst) begin
-    w_active <= 1'b0;
-end
-else begin
-    if(aw_state == COMMIT)
-        w_active <= 1'b1;
-    else if (w_state == COMMIT && axi_wlast == 1'b1)
+    if (rst) begin
         w_active <= 1'b0;
+    end
+    else begin
+        if(aw_state == COMMIT)
+            w_active <= 1'b1;
+        else if (w_state == COMMIT && axi_wlast == 1'b1)
+            w_active <= 1'b0;
+    end
 end
 
 always @(posedge axi_aclk) 
