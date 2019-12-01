@@ -65,7 +65,7 @@ module Write_Channel #(parameter IDW =  12, // ID
         .nondet_unknown7_n63 (),
         .nondet_unknown8_n71 (),
         .nondet_unknown9_n79 (),
-        .rst (),
+        .rst (1'b0),
         .wdata              (wdata_in),
         .write_addr_valid   (awvalid_in),
         .write_valid        (wvalid_in),
@@ -107,7 +107,7 @@ module Write_Channel #(parameter IDW =  12, // ID
 ILA_Slave_write s_w(
         .__ILA_ILA_Slave_write_grant__ (6'b111111),
         .clk    (clk),
-        .rst    (),
+        .rst    (1'b0),
         .s_axi_aresetn  (resetn),
         .s_axi_awaddr   (axi_awaddr),
         .s_axi_awburst  (axi_awburst),

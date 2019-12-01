@@ -258,6 +258,7 @@ assign n65 =  { ( n64 ) , ( bv_2_0_n45 ) }  ;
 assign n66 =  ( n61 ) ? ( n65 ) : ( tx_awaddr ) ;
 always @(posedge clk) begin
    if(rst) begin
+        s_axi_awready <= 1'b1;
    end
    else if(__ILA_ILA_Slave_write_valid__) begin
        if ( __ILA_ILA_Slave_write_decode_of_W_Slave_Reset__ && __ILA_ILA_Slave_write_grant__[0] ) begin
