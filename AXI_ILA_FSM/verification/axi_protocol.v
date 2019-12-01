@@ -12,6 +12,8 @@ module axi_protocol (
     axi_wdata, axi_wlast, axi_wstrb, axi_wvalid, axi_wready,
     bready_in, axi_bresp, axi_bvalid, axi_bready,
 
+    w_active,b_wait,
+
     axi_araddr, axi_arlen,axi_arsize, axi_arburst, axi_arvalid, axi_arready, 
     axi_rdata, axi_rresp, axi_rlast, axi_rvalid, axi_rready
 );
@@ -79,8 +81,8 @@ localparam ASSERT = 2'b10; // ready == 0 && valid == 1
 // -----------------//
 
 // internal states
-reg w_active;
-reg b_wait;
+output reg w_active;
+output reg b_wait;
 reg [AW-1:0] aw_addr;
 reg [7  : 0] aw_len;
 reg [2  : 0] aw_size;

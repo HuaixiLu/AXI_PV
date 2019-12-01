@@ -64,6 +64,9 @@ wire [1 : 0]    ila_axi_bresp;  // status of the write transaction.
 wire            ila_axi_bvalid;  // channel is a valid write response
 wire            ila_axi_bready; // master can accept write response.
 
+wire w_active;
+wire b_wait;
+
 wire resetn;
 
 assign resetn = ~rst;
@@ -104,6 +107,9 @@ fsm(
     .axi_bresp (fsm_axi_bresp), 
     .axi_bvalid (fsm_axi_bvalid), 
     .axi_bready (fsm_axi_bready),
+
+    .w_active (w_active),
+    .b_wait (b_wait),
 
     .axi_araddr (), 
     .axi_arlen (),
