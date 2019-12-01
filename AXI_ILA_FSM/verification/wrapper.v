@@ -64,8 +64,6 @@ wire [1 : 0]    ila_axi_bresp;  // status of the write transaction.
 wire            ila_axi_bvalid;  // channel is a valid write response
 wire            ila_axi_bready; // master can accept write response.
 
-wire w_active;
-wire b_wait;
 
 wire resetn;
 
