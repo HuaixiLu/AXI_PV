@@ -184,7 +184,7 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
   { // B_Master_Commit
     auto instr = wmodel.NewInstr("B_Master_Wait");
 
-    instr.SetDecode( ( m_axi_bready == 0 ) & ( m_axi_aresetn_w == 1 ) );
+    instr.SetDecode( ( m_axi_aresetn_w == 1 ) );
 
     instr.SetUpdate (m_axi_bready, bready);
 
