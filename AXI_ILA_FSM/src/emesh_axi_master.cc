@@ -90,7 +90,7 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
   araddr(rmodel.NewBvInput("araddr", 32)),
   arsize(rmodel.NewBvInput("arsize", 3)),
   arburst(rmodel.NewBvInput("arburst", 2)),
-  read_ready(rmodel.NewBvInput("read_ready", 1)),
+  read_ready(rmodel.NewBvInput("read_ready", 1))
 
 {
 
