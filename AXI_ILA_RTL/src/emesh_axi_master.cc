@@ -80,6 +80,8 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
   wdata(wmodel.NewBvInput("wdata", DATA_LEN)),
   wstrb(wmodel.NewBvInput("wstrb", 8)),
 
+  bready(wmodel.NewBvInput("bready", 1)),
+
   tx_ractive(rmodel.NewBvState("tx_ractive", 1)),
   tx_arlen(rmodel.NewBvState("tx_arlen", 8)),
 
@@ -180,9 +182,11 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
   }
 
   { // B_Master_Commit
-    auto instr = wmodel.NewInstr("B_Master_Commit");
+    auto instr = wmodel.NewInstr("B_Master_Wait");
 
-    instr.SetDecode( ( m_axi_bready == 1 ) & ( m_axi_bvalid == 1 ) & ( m_axi_aresetn_w == 1 ) );
+    instr.SetDecode( ( m_axi_bready == 0 ) & ( m_axi_aresetn_w == 1 ) );
+
+    instr.SetUpdate (m_axi_bready, bready);
 
   }
 

@@ -128,6 +128,7 @@ protected:
   ExprRef awburst;
   ExprRef wdata;
   ExprRef wstrb;
+  ExprRef bready;
 
   ExprRef read_valid;
   ExprRef arlen;
