@@ -89,6 +89,7 @@ reg [1  : 0] aw_burst;
 always @(posedge axi_aclk) begin
     if (rst) begin
         w_active <= 1'b0;
+        axi_wlast <= 1'b0;
     end
     else begin
         if(aw_state == COMMIT) begin
@@ -97,9 +98,15 @@ always @(posedge axi_aclk) begin
             aw_len   <= axi_awlen; 
             aw_size  <= axi_awsize;
             aw_burst <= axi_awburst;
+            if (axi_awlen == 8'b0)
+                axi_wlast <= 1'b1;
+            else
+                axi_wlast <= 1'b0;
         end
         else if (w_state == COMMIT) begin
-            aw_len <= aw_len - 1'b1; 
+            aw_len <= aw_len - 1'b1;
+            if (aw_len == 8'b1)
+                axi_wlast <= 1'b1; 
             if (axi_wlast == 1'b1)
             w_active <= 1'b0;
         end
@@ -113,7 +120,8 @@ begin
     if(rst) begin
         axi_awvalid <= 1'b0;        
         axi_awready <= 1'b1;
-        aw_state <= WAIT;                
+        aw_state <= WAIT;
+        axi_wlast <= 1'b0;                
     end
     else 
     begin
@@ -177,7 +185,6 @@ always @(posedge axi_aclk)
 begin
     if(rst) begin
         axi_wvalid <= 1'b0;
-        axi_wlast <= 1'b0;
         w_state <= WAIT;
     end
     else begin
@@ -190,7 +197,6 @@ begin
                         axi_wdata  <= wdata_in;
                         axi_wstrb  <= wstrb_in;
                         w_state <= COMMIT;
-                        if (axi_awlen == 8'b0) axi_wlast <= 1'b1;
                     end
                     else if(wvalid_in) begin
                         axi_wvalid <= 1'b1;
@@ -224,7 +230,6 @@ begin
                         axi_wvalid <= 1'b0;
                         w_state <= WAIT;
                     end
-                    if (aw_len == 1'b1) axi_wlast <= 1'b1;
                     if (axi_wlast == 1'b1) begin
                         axi_wready <= 1'b0;
                         if (wvalid_in) begin
@@ -243,7 +248,6 @@ begin
                 if (w_active && wready_in) begin
                     w_state <= COMMIT;
                     axi_wready <= 1'b1;
-                    if (axi_awlen == 8'b0) axi_wlast <= 1'b1;
                 end
         endcase
     end
