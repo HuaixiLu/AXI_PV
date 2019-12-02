@@ -120,8 +120,7 @@ begin
     if(rst) begin
         axi_awvalid <= 1'b0;        
         axi_awready <= 1'b1;
-        aw_state <= WAIT;
-        axi_wlast <= 1'b0;                
+        aw_state <= WAIT;             
     end
     else 
     begin
