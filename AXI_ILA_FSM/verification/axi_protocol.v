@@ -266,7 +266,7 @@ begin
     else begin
         case(b_state)
             WAIT:
-                if (w_state == COMMIT && axi_wlast == 1 && (bready_in || axi_bready)) begin
+                if (w_state == COMMIT && axi_wlast == 1 &&  axi_bready) begin
                     axi_bvalid <= 1'b1;
                     axi_bready <= 1'b1;
                     axi_bresp <= 2'b00;
