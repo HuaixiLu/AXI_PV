@@ -133,7 +133,7 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
 
   { // AW_Slave_Commit
     auto instr = wmodel.NewInstr("AW_Slave_Commit");
-    instr.SetDecode( (tx_wactive == 0) & (s_axi_awready == 1) & (s_axi_awvalid == 1) & (s_axi_aresetn_w == 1) );
+    instr.SetDecode( (s_axi_awready == 1) & (s_axi_awvalid == 1) & (s_axi_aresetn_w == 1) );
 
     // we're always ready for an address cycle if we're not doing something else; 
     // but when a transaction happens, awready will change to 0
