@@ -289,8 +289,9 @@ module esaxi (/*autoarg*/
           b_wait            <= 1'b0;         
        end 
      else 
-       begin         
-         if( last_wr_beat ) 
+       begin
+        if(last_wr_beat & write_active)         
+         //if( last_wr_beat )  // Bug: what if there is no write transaction but there is some write data trying to be written?
 	   begin
               s_axi_bvalid      <= 1'b1;
               s_axi_bresp[1:0]  <= 2'b0;           // 'okay' response
