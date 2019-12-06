@@ -219,7 +219,7 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
   { // AR_Slave_Wait
     auto instr = rmodel.NewInstr("AR_Slave_Wait");
     instr.SetDecode( (s_axi_aresetn_r == 1) & (s_axi_arready == 0) );
-    instr.SetUpdate(s_axi_arready, BvConst(1,1));
+    instr.SetUpdate(s_axi_arready, Ite( (tx_ractive == 0), BvConst(1,1), s_axi_arready ) );
   }
 
   { // AR_Slave_Commit
