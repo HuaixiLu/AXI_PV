@@ -162,7 +162,7 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
     // tx_wactive ----- last_wr_beat : two important points
     instr.SetUpdate(s_axi_wready, Ite(s_axi_wlast == 1, BvConst(0,1), write_ready)); // unkownVal == ~wr_wait
     instr.SetUpdate(tx_wactive, Ite(s_axi_wlast  == 1, BvConst(0,1), tx_wactive));
-    instr.SetUpdate(tx_bwait, Ite(s_axi_wlast == 1, ~s_axi_bready, tx_bwait));
+    instr.SetUpdate(tx_bwait, Ite(s_axi_wlast == 1, BvConst(1,1), tx_bwait));
     instr.SetUpdate(s_axi_bvalid, Ite(s_axi_wlast == 1, BvConst(1,1), s_axi_bvalid));
     // ok resp
     instr.SetUpdate(s_axi_bresp, Ite(s_axi_wlast == 1, BvConst(0,2), s_axi_bresp));
@@ -175,7 +175,7 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
 
   { // B_Slave_Commit
     auto instr = wmodel.NewInstr("B_Slave_Commit");
-    instr.SetDecode( (tx_bwait == 1) & (s_axi_wready == 0) & ( s_axi_bvalid == 1 ) & ( s_axi_bready == 1 ) & ( s_axi_aresetn_w == 1 ) );
+    instr.SetDecode( ( s_axi_bvalid == 1 ) & ( s_axi_bready == 1 ) & ( s_axi_aresetn_w == 1 ) );
     instr.SetUpdate(s_axi_bvalid, BvConst(0,1));
     instr.SetUpdate(tx_bwait, BvConst(0,1));
   }
