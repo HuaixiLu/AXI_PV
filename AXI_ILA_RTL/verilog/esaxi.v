@@ -294,8 +294,8 @@ module esaxi (/*autoarg*/
 	   begin
               s_axi_bvalid      <= 1'b1;
               s_axi_bresp[1:0]  <= 2'b0;           // 'okay' response
-              //b_wait <= 1'b1;
-              b_wait            <= ~s_axi_bready;  // note: assumes bready will not drop without valid?       possible bug!    
+              b_wait <= 1'b1;
+              //b_wait            <= ~s_axi_bready;  // note: assumes bready will not drop without valid?       possible bug!    
          end 
 	 else if (s_axi_bready & s_axi_bvalid) 
 	   begin	    
