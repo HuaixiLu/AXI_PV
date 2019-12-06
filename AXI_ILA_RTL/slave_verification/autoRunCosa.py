@@ -7,7 +7,7 @@ env = '/ibuild/ilang-env/bin/activate'
 cosa = '/ibuild/CoSA/CoSA.py' # CoSA
 solver = 'z3'
 
-cmd = "env bash -c 'source %s ; %s --problem %s --solver-name=%s --vcd'"
+cmd ="env bash -c 'source %s ; %s --problem %s --solver-name=%s --vcd'"
 
 
 # --------------------- HELPER --------------------- ##        
