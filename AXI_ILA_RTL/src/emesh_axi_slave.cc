@@ -167,7 +167,7 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
     // ok resp
     instr.SetUpdate(s_axi_bresp, Ite(s_axi_wlast == 1, BvConst(0,2), s_axi_bresp));
     // info update
-    instr.SetUpdate(tx_awlen, Ite(tx_wactive == 1, tx_awlen - BvConst(1,8), tx_awlen));
+    instr.SetUpdate(tx_awlen, tx_awlen - BvConst(1,8));
     instr.SetUpdate(tx_awaddr, Ite( (tx_awburst == BURST_INCR) & (tx_wactive == 1) , Concat(Extract(tx_awaddr,31,2) + BvConst(1,30) , BvConst(0,2)), tx_awaddr));
   }
 
