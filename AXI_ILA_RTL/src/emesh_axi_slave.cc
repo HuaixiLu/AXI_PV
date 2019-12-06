@@ -224,7 +224,7 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
 
   { // AR_Slave_Commit
     auto instr = rmodel.NewInstr("AR_Slave_Commit");
-    instr.SetDecode( (s_axi_arvalid == 1)& (s_axi_arready == 1) & (s_axi_aresetn_r == 1) );
+    instr.SetDecode( (s_axi_arvalid == 1) & (s_axi_arready == 1) & (s_axi_aresetn_r == 1) );
 
     instr.SetUpdate(s_axi_arready, BvConst(0,1));
     instr.SetUpdate(tx_ractive, BvConst(1,1));
@@ -242,7 +242,7 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
 
   { // R_Slave_Prepare
     auto instr = rmodel.NewInstr("R_Slave_Prepare");
-    instr.SetDecode((s_axi_aresetn_r == 1) & (tx_ractive == 1) & (s_axi_rvalid == 0) & (s_axi_arready == 0) );
+    instr.SetDecode((s_axi_aresetn_r == 1) & (s_axi_rvalid == 0) & (s_axi_arready == 0) );
     // Data Valid
     instr.SetUpdate(s_axi_rvalid, Ite(read_valid == 1, BvConst(1,1), s_axi_rvalid));
     auto data = Ite(Extract(tx_arsize,1,0) == 0, Concat(Concat(read_data_7_0, read_data_7_0), Concat(read_data_7_0, read_data_7_0)),
