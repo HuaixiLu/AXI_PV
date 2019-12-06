@@ -31,7 +31,9 @@
     } 
   ],
   
-  "global invariants": []
+  "global invariants": [
+    "(~m1.read_active || ~m1.s_axi_arready) == 1"
+  ]
 
 }
 
