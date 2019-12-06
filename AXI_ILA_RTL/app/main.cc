@@ -73,7 +73,7 @@ void verifyAxiSlaveRW(
       RefrelPath + instcont,                    // conditions of start/ready
       OutputPath,                                            // output path
       model.get(),                                           // model
-      VerilogVerificationTargetGenerator::backend_selector::COSA, // backend: COSA
+      VerilogVerificationTargetGenerator::backend_selector::JASPERGOLD, // backend: COSA
       vtg_cfg,  // target generator configuration
       vlg_cfg); // verilog generator configuration
 
