@@ -32,7 +32,8 @@
   ],
   
   "global invariants": ["(m1.write_active || ~m1.s_axi_wready) == 1", 
-                        "(~m1.write_active || ~m1.s_axi_awready) == 1"]
+                        "(~m1.write_active || ~m1.s_axi_awready) == 1",
+                        "(~m1.write_active || ~m1.s_axi_bvalid) == 1"]
 
 }
 
