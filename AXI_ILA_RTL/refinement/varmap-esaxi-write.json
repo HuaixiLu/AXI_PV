@@ -76,7 +76,7 @@
   },
 
   "mapping control" : [
-    "s_axi_aresetn = m1.s_axi_aresetn",
+    "s_axi_aresetn == m1.s_axi_aresetn",
     "write_ready == ~m1.wr_wait"
   ],
 
