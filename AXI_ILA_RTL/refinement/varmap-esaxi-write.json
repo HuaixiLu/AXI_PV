@@ -71,7 +71,7 @@
     "s_axi_rlast" :       "**SO**",
     "s_axi_rvalid" :      "**SO**",
  
-   "s_axi_aresetn" :           "s_axi_aresetn", // "**NRESET**", // "s_axi_aresetn",
+   "s_axi_aresetn" :           "**NRESET**", // "**NRESET**", // "s_axi_aresetn",
    "s_axi_aclk"    :           "**CLOCK**"
   },
 
