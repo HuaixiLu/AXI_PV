@@ -260,7 +260,7 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
 
   { // R_Slave_Busy
     auto instr = rmodel.NewInstr("R_Slave_Busy");
-    instr.SetDecode( (s_axi_aresetn_r == 1) & (s_axi_rready == 1) & (s_axi_rvalid == 1) & (tx_ractive == 1) & (s_axi_arready == 0));
+    instr.SetDecode( (s_axi_aresetn_r == 1) & (s_axi_rready == 1) & (s_axi_rvalid == 1));
     // Compute when to finish reading
     instr.SetUpdate(tx_arlen, tx_arlen - BvConst(1,8));
     instr.SetUpdate(tx_araddr, Ite(tx_arburst == BURST_INCR, Concat(Extract(tx_araddr,31,2) + BvConst(1,30) , BvConst(0,2)), tx_araddr));
