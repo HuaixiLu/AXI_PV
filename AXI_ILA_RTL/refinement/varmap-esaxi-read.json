@@ -75,7 +75,9 @@
   "s_axi_aclk"    :           "**CLOCK**"
   },
 
-  "mapping control" : [   "read_valid == m1.rr_return_access",
+  "mapping control" : [   
+    "s_axi_aresetn == m1.s_axi_aresetn",
+    "read_valid == m1.rr_return_access",
     "read_data_7_0 == m1.rr_return_data[7:0]",
     "read_data_15_0 == m1.rr_return_data[15:0]",
     "read_data_31_0 == m1.rr_return_data[31:0]",
