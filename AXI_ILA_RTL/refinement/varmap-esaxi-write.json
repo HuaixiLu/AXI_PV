@@ -9,11 +9,11 @@
     "s_axi_bresp"   : "s_axi_bresp",
     "s_axi_bvalid"  : "s_axi_bvalid",
 
-    "tx_wactive"    : "tx_wactive == write_active",
-    "tx_bwait"      : "tx_bwait == b_wait",
-    "tx_awsize"     : "tx_awsize == axi_awsize",
-    "tx_awburst"    : "tx_awburst == axi_awburst",
-    "tx_awaddr"     : "tx_awaddr == axi_awaddr",
+    "tx_wactive"    : "write_active",
+    "tx_bwait"      : "b_wait",
+    "tx_awsize"     : "axi_awsize",
+    "tx_awburst"    : "axi_awburst",
+    "tx_awaddr"     : "axi_awaddr",
     "tx_awlen"      : null
   },
 
