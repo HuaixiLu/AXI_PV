@@ -12,18 +12,18 @@ m_axi_bid,
 m_axi_bresp,
 m_axi_bvalid,
 m_axi_wready,
-nondet_unknown0_n31,
-nondet_unknown10_n71,
-nondet_unknown11_n79,
-nondet_unknown1_n39,
-nondet_unknown2_n47,
-nondet_unknown3_n55,
-nondet_unknown4_n35,
-nondet_unknown5_n43,
-nondet_unknown6_n51,
-nondet_unknown7_n59,
-nondet_unknown8_n67,
-nondet_unknown9_n75,
+nondet_unknown0_n33,
+nondet_unknown10_n73,
+nondet_unknown11_n81,
+nondet_unknown1_n41,
+nondet_unknown2_n49,
+nondet_unknown3_n57,
+nondet_unknown4_n37,
+nondet_unknown5_n45,
+nondet_unknown6_n53,
+nondet_unknown7_n61,
+nondet_unknown8_n69,
+nondet_unknown9_n77,
 rst,
 wdata,
 write_addr_valid,
@@ -72,18 +72,18 @@ input     [11:0] m_axi_bid;
 input      [1:0] m_axi_bresp;
 input            m_axi_bvalid;
 input            m_axi_wready;
-input     [31:0] nondet_unknown0_n31;
-input     [63:0] nondet_unknown10_n71;
-input      [7:0] nondet_unknown11_n79;
-input      [7:0] nondet_unknown1_n39;
-input      [2:0] nondet_unknown2_n47;
-input      [1:0] nondet_unknown3_n55;
-input     [31:0] nondet_unknown4_n35;
-input      [7:0] nondet_unknown5_n43;
-input      [2:0] nondet_unknown6_n51;
-input      [1:0] nondet_unknown7_n59;
-input     [63:0] nondet_unknown8_n67;
-input      [7:0] nondet_unknown9_n75;
+input     [31:0] nondet_unknown0_n33;
+input     [63:0] nondet_unknown10_n73;
+input      [7:0] nondet_unknown11_n81;
+input      [7:0] nondet_unknown1_n41;
+input      [2:0] nondet_unknown2_n49;
+input      [1:0] nondet_unknown3_n57;
+input     [31:0] nondet_unknown4_n37;
+input      [7:0] nondet_unknown5_n45;
+input      [2:0] nondet_unknown6_n53;
+input      [1:0] nondet_unknown7_n61;
+input     [63:0] nondet_unknown8_n69;
+input      [7:0] nondet_unknown9_n77;
 input            rst;
 input     [63:0] wdata;
 input            write_addr_valid;
@@ -136,8 +136,8 @@ wire      [2:0] awsize;
 wire            bready;
 wire            bv_1_0_n0;
 wire            bv_1_1_n3;
-wire      [7:0] bv_8_0_n82;
-wire      [7:0] bv_8_1_n85;
+wire      [7:0] bv_8_0_n84;
+wire      [7:0] bv_8_1_n87;
 wire            clk;
 wire            m_axi_aresetn;
 wire            m_axi_awready;
@@ -168,54 +168,54 @@ wire            n27;
 wire            n28;
 wire            n29;
 wire            n30;
-wire     [31:0] n32;
-wire     [31:0] n33;
-wire            n34;
-wire     [31:0] n36;
-wire     [31:0] n37;
-wire            n38;
+wire            n31;
+wire            n32;
+wire     [31:0] n34;
+wire     [31:0] n35;
+wire            n36;
+wire     [31:0] n38;
+wire     [31:0] n39;
 wire            n4;
-wire      [7:0] n40;
-wire      [7:0] n41;
-wire            n42;
-wire      [7:0] n44;
-wire      [7:0] n45;
-wire            n46;
-wire      [2:0] n48;
-wire      [2:0] n49;
+wire            n40;
+wire      [7:0] n42;
+wire      [7:0] n43;
+wire            n44;
+wire      [7:0] n46;
+wire      [7:0] n47;
+wire            n48;
 wire            n5;
-wire            n50;
-wire      [2:0] n52;
-wire      [2:0] n53;
-wire            n54;
-wire      [1:0] n56;
-wire      [1:0] n57;
-wire            n58;
+wire      [2:0] n50;
+wire      [2:0] n51;
+wire            n52;
+wire      [2:0] n54;
+wire      [2:0] n55;
+wire            n56;
+wire      [1:0] n58;
+wire      [1:0] n59;
 wire            n6;
-wire      [1:0] n60;
-wire      [1:0] n61;
-wire            n62;
-wire            n63;
+wire            n60;
+wire      [1:0] n62;
+wire      [1:0] n63;
 wire            n64;
 wire            n65;
 wire            n66;
-wire     [63:0] n68;
-wire     [63:0] n69;
+wire            n67;
+wire            n68;
 wire            n7;
-wire            n70;
-wire     [63:0] n72;
-wire     [63:0] n73;
-wire            n74;
-wire      [7:0] n76;
-wire      [7:0] n77;
-wire            n78;
+wire     [63:0] n70;
+wire     [63:0] n71;
+wire            n72;
+wire     [63:0] n74;
+wire     [63:0] n75;
+wire            n76;
+wire      [7:0] n78;
+wire      [7:0] n79;
 wire            n8;
-wire      [7:0] n80;
-wire      [7:0] n81;
-wire            n83;
-wire            n84;
+wire            n80;
+wire      [7:0] n82;
+wire      [7:0] n83;
+wire            n85;
 wire            n86;
-wire            n87;
 wire            n88;
 wire            n89;
 wire            n9;
@@ -223,19 +223,21 @@ wire            n90;
 wire            n91;
 wire            n92;
 wire            n93;
-wire      [7:0] n94;
-wire     [31:0] nondet_unknown0_n31;
-wire     [63:0] nondet_unknown10_n71;
-wire      [7:0] nondet_unknown11_n79;
-wire      [7:0] nondet_unknown1_n39;
-wire      [2:0] nondet_unknown2_n47;
-wire      [1:0] nondet_unknown3_n55;
-wire     [31:0] nondet_unknown4_n35;
-wire      [7:0] nondet_unknown5_n43;
-wire      [2:0] nondet_unknown6_n51;
-wire      [1:0] nondet_unknown7_n59;
-wire     [63:0] nondet_unknown8_n67;
-wire      [7:0] nondet_unknown9_n75;
+wire            n94;
+wire            n95;
+wire      [7:0] n96;
+wire     [31:0] nondet_unknown0_n33;
+wire     [63:0] nondet_unknown10_n73;
+wire      [7:0] nondet_unknown11_n81;
+wire      [7:0] nondet_unknown1_n41;
+wire      [2:0] nondet_unknown2_n49;
+wire      [1:0] nondet_unknown3_n57;
+wire     [31:0] nondet_unknown4_n37;
+wire      [7:0] nondet_unknown5_n45;
+wire      [2:0] nondet_unknown6_n53;
+wire      [1:0] nondet_unknown7_n61;
+wire     [63:0] nondet_unknown8_n69;
+wire      [7:0] nondet_unknown9_n77;
 wire            rst;
 wire     [63:0] wdata;
 wire            write_addr_valid;
@@ -285,62 +287,64 @@ assign n27 =  ( m_axi_aresetn ) == ( bv_1_1_n3 )  ;
 assign n28 =  ( n26 ) & (n27 )  ;
 assign __ILA_ILA_Master_write_decode_of_W_Master_Busy__ = n28 ;
 assign __ILA_ILA_Master_write_acc_decode__[6] = __ILA_ILA_Master_write_decode_of_W_Master_Busy__ ;
-assign n29 =  ( m_axi_aresetn ) == ( bv_1_1_n3 )  ;
-assign __ILA_ILA_Master_write_decode_of_B_Master_Wait__ = n29 ;
+assign n29 =  ( m_axi_bready ) == ( bv_1_0_n0 )  ;
+assign n30 =  ( m_axi_aresetn ) == ( bv_1_1_n3 )  ;
+assign n31 =  ( n29 ) & (n30 )  ;
+assign __ILA_ILA_Master_write_decode_of_B_Master_Wait__ = n31 ;
 assign __ILA_ILA_Master_write_acc_decode__[7] = __ILA_ILA_Master_write_decode_of_B_Master_Wait__ ;
-assign n30 =  ( write_addr_valid ) == ( bv_1_1_n3 )  ;
-assign n32 = nondet_unknown0_n31 ;
-assign n33 =  ( n30 ) ? ( awaddr ) : ( n32 ) ;
-assign n34 =  ( write_addr_valid ) == ( bv_1_1_n3 )  ;
-assign n36 = nondet_unknown4_n35 ;
-assign n37 =  ( n34 ) ? ( awaddr ) : ( n36 ) ;
-assign n38 =  ( write_addr_valid ) == ( bv_1_1_n3 )  ;
-assign n40 = nondet_unknown1_n39 ;
-assign n41 =  ( n38 ) ? ( awlen ) : ( n40 ) ;
-assign n42 =  ( write_addr_valid ) == ( bv_1_1_n3 )  ;
-assign n44 = nondet_unknown5_n43 ;
-assign n45 =  ( n42 ) ? ( awlen ) : ( n44 ) ;
-assign n46 =  ( write_addr_valid ) == ( bv_1_1_n3 )  ;
-assign n48 = nondet_unknown2_n47 ;
-assign n49 =  ( n46 ) ? ( awsize ) : ( n48 ) ;
-assign n50 =  ( write_addr_valid ) == ( bv_1_1_n3 )  ;
-assign n52 = nondet_unknown6_n51 ;
-assign n53 =  ( n50 ) ? ( awsize ) : ( n52 ) ;
-assign n54 =  ( write_addr_valid ) == ( bv_1_1_n3 )  ;
-assign n56 = nondet_unknown3_n55 ;
-assign n57 =  ( n54 ) ? ( awburst ) : ( n56 ) ;
-assign n58 =  ( write_addr_valid ) == ( bv_1_1_n3 )  ;
-assign n60 = nondet_unknown7_n59 ;
-assign n61 =  ( n58 ) ? ( awburst ) : ( n60 ) ;
-assign n62 =  ( write_addr_valid ) == ( bv_1_1_n3 )  ;
-assign n63 =  ( n62 ) ? ( bv_1_1_n3 ) : ( bv_1_0_n0 ) ;
+assign n32 =  ( write_addr_valid ) == ( bv_1_1_n3 )  ;
+assign n34 = nondet_unknown0_n33 ;
+assign n35 =  ( n32 ) ? ( awaddr ) : ( n34 ) ;
+assign n36 =  ( write_addr_valid ) == ( bv_1_1_n3 )  ;
+assign n38 = nondet_unknown4_n37 ;
+assign n39 =  ( n36 ) ? ( awaddr ) : ( n38 ) ;
+assign n40 =  ( write_addr_valid ) == ( bv_1_1_n3 )  ;
+assign n42 = nondet_unknown1_n41 ;
+assign n43 =  ( n40 ) ? ( awlen ) : ( n42 ) ;
+assign n44 =  ( write_addr_valid ) == ( bv_1_1_n3 )  ;
+assign n46 = nondet_unknown5_n45 ;
+assign n47 =  ( n44 ) ? ( awlen ) : ( n46 ) ;
+assign n48 =  ( write_addr_valid ) == ( bv_1_1_n3 )  ;
+assign n50 = nondet_unknown2_n49 ;
+assign n51 =  ( n48 ) ? ( awsize ) : ( n50 ) ;
+assign n52 =  ( write_addr_valid ) == ( bv_1_1_n3 )  ;
+assign n54 = nondet_unknown6_n53 ;
+assign n55 =  ( n52 ) ? ( awsize ) : ( n54 ) ;
+assign n56 =  ( write_addr_valid ) == ( bv_1_1_n3 )  ;
+assign n58 = nondet_unknown3_n57 ;
+assign n59 =  ( n56 ) ? ( awburst ) : ( n58 ) ;
+assign n60 =  ( write_addr_valid ) == ( bv_1_1_n3 )  ;
+assign n62 = nondet_unknown7_n61 ;
+assign n63 =  ( n60 ) ? ( awburst ) : ( n62 ) ;
 assign n64 =  ( write_addr_valid ) == ( bv_1_1_n3 )  ;
 assign n65 =  ( n64 ) ? ( bv_1_1_n3 ) : ( bv_1_0_n0 ) ;
-assign n66 =  ( write_valid ) == ( bv_1_1_n3 )  ;
-assign n68 = nondet_unknown8_n67 ;
-assign n69 =  ( n66 ) ? ( wdata ) : ( n68 ) ;
-assign n70 =  ( write_valid ) == ( bv_1_1_n3 )  ;
-assign n72 = nondet_unknown10_n71 ;
-assign n73 =  ( n70 ) ? ( wdata ) : ( n72 ) ;
-assign n74 =  ( write_valid ) == ( bv_1_1_n3 )  ;
-assign n76 = nondet_unknown9_n75 ;
-assign n77 =  ( n74 ) ? ( wstrb ) : ( n76 ) ;
-assign n78 =  ( write_valid ) == ( bv_1_1_n3 )  ;
-assign n80 = nondet_unknown11_n79 ;
-assign n81 =  ( n78 ) ? ( wstrb ) : ( n80 ) ;
-assign bv_8_0_n82 = 8'h0 ;
-assign n83 =  ( m_axi_awlen ) == ( bv_8_0_n82 )  ;
-assign n84 =  ( n83 ) ? ( bv_1_1_n3 ) : ( bv_1_0_n0 ) ;
-assign bv_8_1_n85 = 8'h1 ;
-assign n86 =  ( tx_awlen ) == ( bv_8_1_n85 )  ;
-assign n87 =  ( n86 ) ? ( bv_1_1_n3 ) : ( m_axi_wlast ) ;
-assign n88 =  ( write_valid ) == ( bv_1_1_n3 )  ;
-assign n89 =  ( n88 ) ? ( bv_1_1_n3 ) : ( bv_1_0_n0 ) ;
+assign n66 =  ( write_addr_valid ) == ( bv_1_1_n3 )  ;
+assign n67 =  ( n66 ) ? ( bv_1_1_n3 ) : ( bv_1_0_n0 ) ;
+assign n68 =  ( write_valid ) == ( bv_1_1_n3 )  ;
+assign n70 = nondet_unknown8_n69 ;
+assign n71 =  ( n68 ) ? ( wdata ) : ( n70 ) ;
+assign n72 =  ( write_valid ) == ( bv_1_1_n3 )  ;
+assign n74 = nondet_unknown10_n73 ;
+assign n75 =  ( n72 ) ? ( wdata ) : ( n74 ) ;
+assign n76 =  ( write_valid ) == ( bv_1_1_n3 )  ;
+assign n78 = nondet_unknown9_n77 ;
+assign n79 =  ( n76 ) ? ( wstrb ) : ( n78 ) ;
+assign n80 =  ( write_valid ) == ( bv_1_1_n3 )  ;
+assign n82 = nondet_unknown11_n81 ;
+assign n83 =  ( n80 ) ? ( wstrb ) : ( n82 ) ;
+assign bv_8_0_n84 = 8'h0 ;
+assign n85 =  ( m_axi_awlen ) == ( bv_8_0_n84 )  ;
+assign n86 =  ( n85 ) ? ( bv_1_1_n3 ) : ( bv_1_0_n0 ) ;
+assign bv_8_1_n87 = 8'h1 ;
+assign n88 =  ( tx_awlen ) == ( bv_8_1_n87 )  ;
+assign n89 =  ( n88 ) ? ( bv_1_1_n3 ) : ( m_axi_wlast ) ;
 assign n90 =  ( write_valid ) == ( bv_1_1_n3 )  ;
 assign n91 =  ( n90 ) ? ( bv_1_1_n3 ) : ( bv_1_0_n0 ) ;
-assign n92 =  ( tx_awlen ) == ( bv_8_1_n85 )  ;
-assign n93 =  ( n92 ) ? ( bv_1_0_n0 ) : ( tx_wactive ) ;
-assign n94 =  ( tx_awlen ) - ( bv_8_1_n85 )  ;
+assign n92 =  ( write_valid ) == ( bv_1_1_n3 )  ;
+assign n93 =  ( n92 ) ? ( bv_1_1_n3 ) : ( bv_1_0_n0 ) ;
+assign n94 =  ( tx_awlen ) == ( bv_8_1_n87 )  ;
+assign n95 =  ( n94 ) ? ( bv_1_0_n0 ) : ( tx_wactive ) ;
+assign n96 =  ( tx_awlen ) - ( bv_8_1_n87 )  ;
 always @(posedge clk) begin
    if(rst) begin
    end
@@ -349,69 +353,69 @@ always @(posedge clk) begin
            m_axi_awid <= m_axi_awid;
        end
        if ( __ILA_ILA_Master_write_decode_of_AW_Master_Prepare__ && __ILA_ILA_Master_write_grant__[1] ) begin
-           m_axi_awaddr <= n33;
+           m_axi_awaddr <= n35;
        end else if ( __ILA_ILA_Master_write_decode_of_AW_Master_Asserted__ && __ILA_ILA_Master_write_grant__[2] ) begin
            m_axi_awaddr <= m_axi_awaddr;
        end else if ( __ILA_ILA_Master_write_decode_of_AW_Master_Commit__ && __ILA_ILA_Master_write_grant__[3] ) begin
-           m_axi_awaddr <= n37;
+           m_axi_awaddr <= n39;
        end
        if ( __ILA_ILA_Master_write_decode_of_AW_Master_Prepare__ && __ILA_ILA_Master_write_grant__[1] ) begin
-           m_axi_awlen <= n41;
+           m_axi_awlen <= n43;
        end else if ( __ILA_ILA_Master_write_decode_of_AW_Master_Asserted__ && __ILA_ILA_Master_write_grant__[2] ) begin
            m_axi_awlen <= m_axi_awlen;
        end else if ( __ILA_ILA_Master_write_decode_of_AW_Master_Commit__ && __ILA_ILA_Master_write_grant__[3] ) begin
-           m_axi_awlen <= n45;
+           m_axi_awlen <= n47;
        end
        if ( __ILA_ILA_Master_write_decode_of_AW_Master_Prepare__ && __ILA_ILA_Master_write_grant__[1] ) begin
-           m_axi_awsize <= n49;
+           m_axi_awsize <= n51;
        end else if ( __ILA_ILA_Master_write_decode_of_AW_Master_Asserted__ && __ILA_ILA_Master_write_grant__[2] ) begin
            m_axi_awsize <= m_axi_awsize;
        end else if ( __ILA_ILA_Master_write_decode_of_AW_Master_Commit__ && __ILA_ILA_Master_write_grant__[3] ) begin
-           m_axi_awsize <= n53;
+           m_axi_awsize <= n55;
        end
        if ( __ILA_ILA_Master_write_decode_of_AW_Master_Prepare__ && __ILA_ILA_Master_write_grant__[1] ) begin
-           m_axi_awburst <= n57;
+           m_axi_awburst <= n59;
        end else if ( __ILA_ILA_Master_write_decode_of_AW_Master_Asserted__ && __ILA_ILA_Master_write_grant__[2] ) begin
            m_axi_awburst <= m_axi_awburst;
        end else if ( __ILA_ILA_Master_write_decode_of_AW_Master_Commit__ && __ILA_ILA_Master_write_grant__[3] ) begin
-           m_axi_awburst <= n61;
+           m_axi_awburst <= n63;
        end
        if ( __ILA_ILA_Master_write_decode_of_W_Master_Reset__ && __ILA_ILA_Master_write_grant__[0] ) begin
            m_axi_awvalid <= bv_1_0_n0;
        end else if ( __ILA_ILA_Master_write_decode_of_AW_Master_Prepare__ && __ILA_ILA_Master_write_grant__[1] ) begin
-           m_axi_awvalid <= n63;
+           m_axi_awvalid <= n65;
        end else if ( __ILA_ILA_Master_write_decode_of_AW_Master_Asserted__ && __ILA_ILA_Master_write_grant__[2] ) begin
            m_axi_awvalid <= m_axi_awvalid;
        end else if ( __ILA_ILA_Master_write_decode_of_AW_Master_Commit__ && __ILA_ILA_Master_write_grant__[3] ) begin
-           m_axi_awvalid <= n65;
+           m_axi_awvalid <= n67;
        end
        if ( __ILA_ILA_Master_write_decode_of_W_Master_Prepare__ && __ILA_ILA_Master_write_grant__[4] ) begin
-           m_axi_wdata <= n69;
+           m_axi_wdata <= n71;
        end else if ( __ILA_ILA_Master_write_decode_of_W_Master_Asserted__ && __ILA_ILA_Master_write_grant__[5] ) begin
            m_axi_wdata <= m_axi_wdata;
        end else if ( __ILA_ILA_Master_write_decode_of_W_Master_Busy__ && __ILA_ILA_Master_write_grant__[6] ) begin
-           m_axi_wdata <= n73;
+           m_axi_wdata <= n75;
        end
        if ( __ILA_ILA_Master_write_decode_of_W_Master_Prepare__ && __ILA_ILA_Master_write_grant__[4] ) begin
-           m_axi_wstrb <= n77;
+           m_axi_wstrb <= n79;
        end else if ( __ILA_ILA_Master_write_decode_of_W_Master_Asserted__ && __ILA_ILA_Master_write_grant__[5] ) begin
            m_axi_wstrb <= m_axi_wstrb;
        end else if ( __ILA_ILA_Master_write_decode_of_W_Master_Busy__ && __ILA_ILA_Master_write_grant__[6] ) begin
-           m_axi_wstrb <= n81;
+           m_axi_wstrb <= n83;
        end
        if ( __ILA_ILA_Master_write_decode_of_AW_Master_Commit__ && __ILA_ILA_Master_write_grant__[3] ) begin
-           m_axi_wlast <= n84;
+           m_axi_wlast <= n86;
        end else if ( __ILA_ILA_Master_write_decode_of_W_Master_Busy__ && __ILA_ILA_Master_write_grant__[6] ) begin
-           m_axi_wlast <= n87;
+           m_axi_wlast <= n89;
        end
        if ( __ILA_ILA_Master_write_decode_of_W_Master_Reset__ && __ILA_ILA_Master_write_grant__[0] ) begin
            m_axi_wvalid <= bv_1_0_n0;
        end else if ( __ILA_ILA_Master_write_decode_of_W_Master_Prepare__ && __ILA_ILA_Master_write_grant__[4] ) begin
-           m_axi_wvalid <= n89;
+           m_axi_wvalid <= n91;
        end else if ( __ILA_ILA_Master_write_decode_of_W_Master_Asserted__ && __ILA_ILA_Master_write_grant__[5] ) begin
            m_axi_wvalid <= m_axi_wvalid;
        end else if ( __ILA_ILA_Master_write_decode_of_W_Master_Busy__ && __ILA_ILA_Master_write_grant__[6] ) begin
-           m_axi_wvalid <= n91;
+           m_axi_wvalid <= n93;
        end
        if ( __ILA_ILA_Master_write_decode_of_B_Master_Wait__ && __ILA_ILA_Master_write_grant__[7] ) begin
            m_axi_bready <= bready;
@@ -419,12 +423,12 @@ always @(posedge clk) begin
        if ( __ILA_ILA_Master_write_decode_of_AW_Master_Commit__ && __ILA_ILA_Master_write_grant__[3] ) begin
            tx_wactive <= bv_1_1_n3;
        end else if ( __ILA_ILA_Master_write_decode_of_W_Master_Busy__ && __ILA_ILA_Master_write_grant__[6] ) begin
-           tx_wactive <= n93;
+           tx_wactive <= n95;
        end
        if ( __ILA_ILA_Master_write_decode_of_AW_Master_Commit__ && __ILA_ILA_Master_write_grant__[3] ) begin
            tx_awlen <= m_axi_awlen;
        end else if ( __ILA_ILA_Master_write_decode_of_W_Master_Busy__ && __ILA_ILA_Master_write_grant__[6] ) begin
-           tx_awlen <= n94;
+           tx_awlen <= n96;
        end
    end
 end
