@@ -127,13 +127,13 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
 
   { // AW_Slave_Wait
     auto instr = wmodel.NewInstr("AW_Slave_Wait"); 
-    instr.SetDecode( (tx_wactive == 0) & (tx_bwait == 0) & (s_axi_awready == 0) & ( s_axi_aresetn_w == 1 ) );
-    instr.SetUpdate(s_axi_awready, BvConst(1,1));
+    instr.SetDecode( (s_axi_awready == 0) & ( s_axi_aresetn_w == 1 ) );
+    instr.SetUpdate(s_axi_awready, Ite( ((tx_wactive == 0) & (tx_bwait == 0)), BvConst(1,1), BvConst(0,1)));
   }
 
   { // AW_Slave_Commit
     auto instr = wmodel.NewInstr("AW_Slave_Commit");
-    instr.SetDecode( (tx_wactive == 0) & (s_axi_awready == 1) & (s_axi_awvalid == 1) & (s_axi_aresetn_w == 1) );
+    instr.SetDecode( (s_axi_awready == 1) & (s_axi_awvalid == 1) & (s_axi_aresetn_w == 1) );
 
     // we're always ready for an address cycle if we're not doing something else; 
     // but when a transaction happens, awready will change to 0
@@ -152,17 +152,17 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
 
   { // W_Slave_Wait
     auto instr = wmodel.NewInstr("W_Slave_Wait"); 
-    instr.SetDecode( (tx_wactive == 1) & (s_axi_wready == 0) & ( s_axi_aresetn_w == 1 ) );
-    instr.SetUpdate(s_axi_wready, write_ready);
+    instr.SetDecode( (s_axi_wready == 0) & ( s_axi_aresetn_w == 1 ) );
+    instr.SetUpdate(s_axi_wready, Ite( tx_wactive == 1, write_ready, BvConst(0,1)));
   }
 
   { // W_Slave_Busy
     auto instr = wmodel.NewInstr("W_Slave_Busy"); 
-    instr.SetDecode( (tx_wactive == 1) & (s_axi_wready == 1) & (s_axi_wvalid == 1) & (s_axi_bvalid == 0) & (s_axi_awready == 0) & ( s_axi_aresetn_w == 1 ));
+    instr.SetDecode( (s_axi_wready == 1) & (s_axi_wvalid == 1) & ( s_axi_aresetn_w == 1 ));
     // tx_wactive ----- last_wr_beat : two important points
     instr.SetUpdate(s_axi_wready, Ite(s_axi_wlast == 1, BvConst(0,1), write_ready)); 
     instr.SetUpdate(tx_wactive, Ite(s_axi_wlast == 1, BvConst(0,1), tx_wactive));
-    instr.SetUpdate(tx_bwait, Ite(s_axi_wlast == 1, ~s_axi_bready, tx_bwait));
+    instr.SetUpdate(tx_bwait, Ite(s_axi_wlast == 1, BvConst(1,1), tx_bwait));
     instr.SetUpdate(s_axi_bvalid, Ite(s_axi_wlast == 1, BvConst(1,1), s_axi_bvalid));
     // ok resp
     instr.SetUpdate(s_axi_bresp, Ite(s_axi_wlast == 1, BvConst(0,2), s_axi_bresp));
@@ -175,7 +175,7 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
 
   { // B_Slave_Commit
     auto instr = wmodel.NewInstr("B_Slave_Commit");
-    instr.SetDecode( (tx_bwait == 1) & (s_axi_wready == 0) & ( s_axi_bvalid == 1 ) & ( s_axi_bready == 1 ) & ( s_axi_aresetn_w == 1 ) );
+    instr.SetDecode( ( s_axi_bvalid == 1 ) & ( s_axi_bready == 1 ) & ( s_axi_aresetn_w == 1 ) );
     instr.SetUpdate(s_axi_bvalid, BvConst(0,1));
     instr.SetUpdate(tx_bwait, BvConst(0,1));
   }
@@ -218,13 +218,13 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
 
   { // AR_Slave_Wait
     auto instr = rmodel.NewInstr("AR_Slave_Wait");
-    instr.SetDecode( (s_axi_aresetn_r == 1) & (s_axi_arready == 0) & (tx_ractive == 0) );
-    instr.SetUpdate(s_axi_arready, BvConst(1,1));
+    instr.SetDecode( (s_axi_aresetn_r == 1) & (s_axi_arready == 0) );
+    instr.SetUpdate(s_axi_arready, Ite( (tx_ractive == 0), BvConst(1,1), s_axi_arready ) );
   }
 
   { // AR_Slave_Commit
     auto instr = rmodel.NewInstr("AR_Slave_Commit");
-    instr.SetDecode( (tx_ractive == 0) & (s_axi_rvalid == 0) & (s_axi_aresetn_r == 1) & (s_axi_arvalid == 1) & (s_axi_arready == 1));
+    instr.SetDecode( (s_axi_arvalid == 1) & (s_axi_arready == 1) & (s_axi_aresetn_r == 1) );
 
     instr.SetUpdate(s_axi_arready, BvConst(0,1));
     instr.SetUpdate(tx_ractive, BvConst(1,1));
@@ -242,7 +242,7 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
 
   { // R_Slave_Prepare
     auto instr = rmodel.NewInstr("R_Slave_Prepare");
-    instr.SetDecode((s_axi_aresetn_r == 1) & (tx_ractive == 1) & (s_axi_rvalid == 0) & (s_axi_arready == 0) );
+    instr.SetDecode((s_axi_aresetn_r == 1) & (s_axi_rvalid == 0) );
     // Data Valid
     instr.SetUpdate(s_axi_rvalid, Ite(read_valid == 1, BvConst(1,1), s_axi_rvalid));
     auto data = Ite(Extract(tx_arsize,1,0) == 0, Concat(Concat(read_data_7_0, read_data_7_0), Concat(read_data_7_0, read_data_7_0)),
@@ -260,7 +260,7 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
 
   { // R_Slave_Busy
     auto instr = rmodel.NewInstr("R_Slave_Busy");
-    instr.SetDecode( (s_axi_aresetn_r == 1) & (s_axi_rready == 1) & (s_axi_rvalid == 1) & (tx_ractive == 1) & (s_axi_arready == 0));
+    instr.SetDecode( (s_axi_aresetn_r == 1) & (s_axi_rready == 1) & (s_axi_rvalid == 1));
     // Compute when to finish reading
     instr.SetUpdate(tx_arlen, tx_arlen - BvConst(1,8));
     instr.SetUpdate(tx_araddr, Ite(tx_arburst == BURST_INCR, Concat(Extract(tx_araddr,31,2) + BvConst(1,30) , BvConst(0,2)), tx_araddr));
