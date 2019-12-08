@@ -137,6 +137,7 @@ begin
                         axi_awburst <= awburst_in;
                     end
                     else if (awvalid_in) begin
+                        axi_awvalid <= 1'b1;
                         aw_state <= ASSERT;
                         axi_awaddr  <= awaddr_in;
                         axi_awlen   <= awlen_in; 
