@@ -199,6 +199,7 @@ begin
                     end
                     else if(wvalid_in) begin
                         axi_wvalid <= 1'b1;
+                        axi_wready <= 1'b0;
                         axi_wdata  <= wdata_in;
                         axi_wstrb  <= wstrb_in;
                         w_state <= ASSERT;
