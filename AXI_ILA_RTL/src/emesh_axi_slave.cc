@@ -152,8 +152,8 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
 
   { // W_Slave_Wait
     auto instr = wmodel.NewInstr("W_Slave_Wait"); 
-    instr.SetDecode( (s_axi_wready == 0) & ( s_axi_aresetn_w == 1 ) );
-    instr.SetUpdate(s_axi_wready, Ite( tx_wactive == 1, write_ready, BvConst(0,1)));
+    instr.SetDecode( ( (s_axi_wvalid == 0) | ( (s_axi_wvalid == 1) & (s_axi_wready == 0) ) ) & ( s_axi_aresetn_w == 1 ) );
+    instr.SetUpdate(s_axi_wready, Ite( tx_wactive == 1, write_ready, s_axi_wready) );
   }
 
   { // W_Slave_Busy
