@@ -243,7 +243,7 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
 
   { // R_Master_Wait
     auto instr = rmodel.NewInstr("R_Master_Wait");
-    instr.SetDecode( (m_axi_aresetn_r == 1) & (m_axi_rready == 0) );
+    instr.SetDecode( (m_axi_aresetn_r == 1) );
     instr.SetUpdate(m_axi_rready, read_ready);
   }
 
