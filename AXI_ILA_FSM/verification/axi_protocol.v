@@ -295,6 +295,7 @@ begin
                 end
                 else if (w_state == COMMIT && axi_wlast == 1) begin
                     axi_bvalid <= 1'b1;
+                    axi_bready <= 1'b0;
                     axi_bresp <= 2'b00;
                     b_state <= ASSERT;
                     b_wait <= 1'b1;

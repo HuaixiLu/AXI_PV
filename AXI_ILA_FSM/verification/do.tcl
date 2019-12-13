@@ -19,5 +19,5 @@ assert -name wvalid_assert  {(fsm_axi_wvalid  == ila_axi_wvalid)}
 assert -name bready_assert  {(fsm_axi_bready  == ila_axi_bready)}
 assert -name bvalid_assert  {(fsm_axi_bvalid  == ila_axi_bvalid)}
 
-assert -name bvalid_assert  {(fsm_axi_arready  == ila_axi_arready)}
+assert -name arready_assert  {(fsm_axi_arready  == ila_axi_arready)}
 
