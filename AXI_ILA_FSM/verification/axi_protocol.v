@@ -19,7 +19,7 @@ module axi_protocol (
     axi_araddr, axi_arlen,axi_arsize, axi_arburst, axi_arvalid, axi_arready,
 
     rdate_in, rvalid_in, rready_in,
-    axi_rdata, axi_rresp, axi_rlast, axi_rvalid, axi_rready
+    axi_rdata, axi_rlast, axi_rvalid, axi_rready
 );
 
     parameter IDW = 12; // ID
@@ -81,7 +81,6 @@ module axi_protocol (
    input             rready_in;
 
    output reg [63 : 0]   axi_rdata;   // master read data
-   output reg [1 : 0]    axi_rresp;   // status of the read transfer
    output reg            axi_rlast;   // last transfer in a read burst
    output reg            axi_rvalid;  // signaling the required read data
    output reg            axi_rready;  // master can accept the readback data

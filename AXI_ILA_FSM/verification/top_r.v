@@ -85,9 +85,9 @@ EmeshAxiMasterBridge_read m_r(
 EmeshAxiSlaveBridge_read s_r(
     .__ILA_EmeshAxiSlaveBridge_read_grant__(6'b111111),
     .clk(clk),
-    .read_data_15_0 (),
-    .read_data_31_0 (),
-    .read_data_7_0 (),
+    .read_data_15_0 (rdata_in[15:0]),
+    .read_data_31_0 (rdata_in[31:0]),
+    .read_data_7_0 (rdata_in[7:0]),
     .read_resp (),
     .read_valid (rvalid_in),
     .rst (1'b0),

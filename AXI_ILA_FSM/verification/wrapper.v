@@ -24,7 +24,19 @@ module wrapper #(parameter IDW =  12, // ID
     input             wvalid_in,
     input             wready_in,
     //Write response channel
-    input             bready_in
+    input             bready_in,
+
+    //Read Address Channel
+    input  [AW-1 : 0] araddr_in,
+    input  [7 : 0]    arlen_in,
+    input  [2 : 0]    arsize_in,
+    input  [1 : 0]    arburst_in,
+    input             arvalid_in,
+    
+    //Read data channel
+    input  [63 : 0]   rdata_in,
+    input             rvalid_in,
+    input             rready_in
 
 );
 
@@ -46,6 +58,18 @@ wire [1 : 0]    fsm_axi_bresp;  // status of the write transaction.
 wire            fsm_axi_bvalid;  // channel is a valid write response
 wire            fsm_axi_bready; // master can accept write response.
 
+wire [AW-1 : 0] fsm_axi_araddr;  // master interface write address   
+wire [7 : 0]    fsm_axi_arlen; // burst length.
+wire [2 : 0]    fsm_axi_arsize;  // burst size.
+wire [1 : 0]    fsm_axi_arburst; // burst type.
+wire            fsm_axi_arvalid; // write address valid
+wire            fsm_axi_arready; // write address ready
+
+wire [63 : 0]   fsm_axi_rdata;   // master interface write data.
+wire            fsm_axi_rlast;   // last transfer in a write burst.
+wire            fsm_axi_rvalid;  // indicates data is ready to go
+wire            fsm_axi_rready;  // slave is ready for data
+
 //ILA interface
 wire [AW-1 : 0] ila_axi_awaddr;  // master interface write address   
 wire [7 : 0]    ila_axi_awlen; // burst length.
@@ -63,6 +87,18 @@ wire            ila_axi_wready;  // slave is ready for data
 wire [1 : 0]    ila_axi_bresp;  // status of the write transaction.
 wire            ila_axi_bvalid;  // channel is a valid write response
 wire            ila_axi_bready; // master can accept write response.
+
+wire [AW-1 : 0] ila_axi_araddr;  // master interface write address   
+wire [7 : 0]    ila_axi_arlen; // burst length.
+wire [2 : 0]    ila_axi_arsize;  // burst size.
+wire [1 : 0]    ila_axi_arburst; // burst type.
+wire            ila_axi_arvalid; // write address valid
+wire            ila_axi_arready; // write address ready
+
+wire [63 : 0]   ila_axi_rdata;   // master interface write data.
+wire            ila_axi_rlast;   // last transfer in a write burst.
+wire            ila_axi_rvalid;  // indicates data is ready to go
+wire            ila_axi_rready;  // slave is ready for data
 
 
 wire resetn;
@@ -106,24 +142,33 @@ fsm(
     .axi_bvalid (fsm_axi_bvalid), 
     .axi_bready (fsm_axi_bready),
 
-    .axi_araddr (), 
-    .axi_arlen (),
-    .axi_arsize (), 
-    .axi_arburst (), 
-    .axi_arvalid (), 
-    .axi_arready (), 
+    .araddr_in  (araddr_in),
+    .arlen_in   (arlen_in),
+    .arsize_in  (arsize_in),
+    .arburst_in (arburst_in),
+    .arvalid_in (arvalid_in),
+
+    .axi_araddr (fsm_axi_araddr), 
+    .axi_arlen  (fsm_axi_arlen),
+    .axi_arsize (fsm_axi_arsize), 
+    .axi_arburst (fsm_axi_arburst), 
+    .axi_arvalid (fsm_axi_arvalid), 
+    .axi_arready (fsm_axi_arready), 
+
+    .rdata_in   (rdata_in),
+    .rvalid_in  (rvalid_in),
+    .rready_in  (rready_in),
     
-    .axi_rdata(), 
-    .axi_rresp(), 
-    .axi_rlast(), 
-    .axi_rvalid(), 
-    .axi_rready()
+    .axi_rdata  (fsm_axi_rdata), 
+    .axi_rlast  (fsm_axi_rlast), 
+    .axi_rvalid (fsm_axi_rvalid), 
+    .axi_rready (fsm_axi_rready)
 );
 
 Write_Channel #( .IDW(104), 
                 .AW(32),
                 .DW(32) )
-ila(
+ila_w(
     .clk (clk),
     .resetn (resetn),
     
@@ -158,6 +203,40 @@ ila(
     .axi_bready (ila_axi_bready)
 
 );
+
+Read_Channel #( .IDW(104), 
+                .AW(32),
+                .DW(32) )
+ila_r(
+    .clk (clk),
+    .resetn (resetn),
+    
+    .araddr_in (araddr_in), 
+    .arburst_in (arburst_in), 
+    .arlen_in (arlen_in), 
+    .arsize_in (arsize_in), 
+    .arvalid_in (arvalid_in),
+
+    .axi_araddr (ila_axi_araddr), 
+    .axi_arlen (ila_axi_arlen), 
+    .axi_arsize (ila_axi_arsize), 
+    .axi_arburst (ila_axi_arburst), 
+    .axi_arvalid (ila_axi_arvalid), 
+    .axi_arready (ila_axi_arready),
+
+    .rdata_in (rdata_in), 
+    .rstrb_in (rstrb_in), 
+    .rvalid_in (rvalid_in), 
+    .rready_in (rready_in),
+    
+    .axi_rdata (ila_axi_rdata), 
+    .axi_rlast (ila_axi_rlast),
+    .axi_rvalid (ila_axi_rvalid), 
+    .axi_rready (ila_axi_rready)
+
+);
+
+
 
 endmodule
 
