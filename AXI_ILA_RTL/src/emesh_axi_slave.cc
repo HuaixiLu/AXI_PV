@@ -7,7 +7,7 @@
 
 EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
     : // construct the model
-  wmodel("EmeshAxiSlaveBridge_write"),
+  wmodel("ILA_Slave_write"),
   // global reset
   s_axi_aresetn_w (wmodel.NewBvInput("s_axi_aresetn",1)),
 
@@ -207,7 +207,7 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
     instr.SetUpdate(tx_araddr, BvConst(0,32));
     instr.SetUpdate(tx_arburst, BvConst(0,2));
     // R
-    instr.SetUpdate(s_axi_rvalid,  BvConst(0,1)); // a slave interface must drive RVALID and BVALID low
+    instr.SetUpdate(s_axi_rvalid,  BvConst(0,1)); // a slave interface must drive RVALID low
     instr.SetUpdate(s_axi_rdata, BvConst(0,32));
     instr.SetUpdate(s_axi_rresp, BvConst(0,2));    
     instr.SetUpdate(s_axi_rlast, BvConst(0,1));
@@ -244,10 +244,10 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
     auto instr = rmodel.NewInstr("R_Slave_Prepare");
     instr.SetDecode((s_axi_aresetn_r == 1) & (s_axi_rvalid == 0) );
     // Data Valid
-    instr.SetUpdate(s_axi_rvalid, Ite(read_valid == 1, BvConst(1,1), s_axi_rvalid));
+    instr.SetUpdate(s_axi_rvalid, Ite(tx_ractive, Ite(read_valid == 1, BvConst(1,1), s_axi_rvalid)), s_axi_rvalid);
     auto data = Ite(Extract(tx_arsize,1,0) == 0, Concat(Concat(read_data_7_0, read_data_7_0), Concat(read_data_7_0, read_data_7_0)),
                 Ite(Extract(tx_arsize,1,0) == 1, Concat(read_data_15_0, read_data_15_0), read_data_31_0));
-    instr.SetUpdate(s_axi_rdata, Ite(read_valid == 1, data, s_axi_rdata));
+    instr.SetUpdate(s_axi_rdata, Ite(tx_ractive, Ite(read_valid == 1, data, s_axi_rdata)), s_axi_rdata);
 
   }
 
@@ -267,7 +267,7 @@ EmeshAxiSlaveBridge::EmeshAxiSlaveBridge()
 
     instr.SetUpdate(s_axi_rlast, Ite(tx_arlen == BvConst(1,8), BvConst(1,1), s_axi_rlast));
     instr.SetUpdate(tx_ractive, Ite(s_axi_rlast == BvConst(1,1), BvConst(0,1), tx_ractive));
-    instr.SetUpdate(s_axi_rvalid, Ite(read_valid == 1, BvConst(1,1), BvConst(0,1)));
+    instr.SetUpdate(s_axi_rvalid, Ite(s_axi_rlast == BvConst(1,1), BvConst(0,1), Ite(read_valid == 1, BvConst(1,1), BvConst(0,1))) );
     instr.SetUpdate(s_axi_rresp, Ite(read_valid == 1, read_resp, s_axi_rresp));
   }
 
