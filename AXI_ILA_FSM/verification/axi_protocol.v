@@ -447,9 +447,10 @@ begin
                         axi_rdata  <= rdata_in;
                         r_state <= ASSERT;
                     end
-                    else
-                        axi_rready <= rready_in;
                 end
+                
+                else
+                    axi_rready <= rready_in;
             COMMIT: // ready && valid == 1
                 begin
                    if(rvalid_in && rready_in) begin
