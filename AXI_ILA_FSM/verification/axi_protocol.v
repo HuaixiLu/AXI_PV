@@ -56,6 +56,12 @@ module axi_protocol (
    output reg            axi_bready;  // master can accept write response.
 
    //Read address channel
+    input  [AW-1 : 0] araddr_in;
+    input  [7 : 0]    arlen_in;
+    input  [2 : 0]    arsize_in;
+    input  [1 : 0]    arburst_in;
+    input             arvalid_in;
+
    output reg [AW-1 :0]  axi_araddr;  // initial address of a read burst
    output reg [7 : 0]    axi_arlen;   // burst length
    output reg [2 : 0]    axi_arsize;  // burst size
@@ -63,7 +69,11 @@ module axi_protocol (
    output reg            axi_arvalid; // valid read address
    output reg            axi_arready; // slave is ready to accept an address
 
-   //Read data channel   
+   //Read data channel
+   input  [63 : 0]   rdata_in;
+   input             rvalid_in;
+   input             rready_in;
+
    output reg [63 : 0]   axi_rdata;   // master read data
    output reg [1 : 0]    axi_rresp;   // status of the read transfer
    output reg            axi_rlast;   // last transfer in a read burst
@@ -298,6 +308,179 @@ begin
                 axi_bready <= 1'b1;
                 b_state <= COMMIT;
             end
+        endcase
+    end
+end
+
+// -----------------//
+//  AR Channel FSM  //
+// -----------------//
+
+// internal states
+reg r_active;
+reg [AW-1:0] ar_addr;
+reg [7  : 0] ar_len;
+reg [2  : 0] ar_size;
+reg [1  : 0] ar_burst;
+
+always @(posedge axi_aclk) begin
+    if (rst) begin
+        r_active <= 1'b0;
+        axi_rlast <= 1'b0;
+    end
+    else begin
+        if(ar_state == COMMIT) begin
+            r_active <= 1'b1;
+            ar_addr  <= axi_araddr;
+            ar_len   <= axi_arlen; 
+            ar_size  <= axi_arsize;
+            ar_burst <= axi_arburst;
+            if (axi_arlen == 8'b0)
+                axi_rlast <= 1'b1;
+            else
+                axi_rlast <= 1'b0;
+        end
+        else if (r_state == COMMIT) begin
+            ar_len <= ar_len - 1'b1;
+            if (ar_len == 8'b1)
+                axi_rlast <= 1'b1; 
+            if (axi_rlast == 1'b1)
+            r_active <= 1'b0;
+        end
+    end
+end
+
+reg [1:0] ar_state;
+
+always @(posedge axi_aclk) 
+begin
+    if(rst) begin
+        axi_arvalid <= 1'b0;        
+        axi_arready <= 1'b1;
+        ar_state <= WAIT;             
+    end
+    else 
+    begin
+        case(ar_state)
+            WAIT:
+                begin
+                    if ( (~r_active || axi_arready) && arvalid_in) begin
+                        axi_arready <= 1'b1;
+                        axi_arvalid <= 1'b1;
+                        ar_state <= COMMIT;
+                        axi_araddr  <= araddr_in;
+                        axi_arlen   <= arlen_in; 
+                        axi_arsize  <= arsize_in;
+                        axi_arburst <= arburst_in;
+                    end
+                    else if (arvalid_in) begin
+                        axi_arvalid <= 1'b1;
+                        ar_state <= ASSERT;
+                        axi_araddr  <= araddr_in;
+                        axi_arlen   <= arlen_in; 
+                        axi_arsize  <= arsize_in;
+                        axi_arburst <= arburst_in;
+                    end
+                    else if (~r_active) begin
+                        axi_arready <= 1'b1;
+                    end
+                end
+
+            COMMIT:
+                begin
+                    axi_arready <= 1'b0;
+                    if (arvalid_in) begin 
+                        ar_state <= ASSERT;
+                        axi_arvalid <= 1'b1;
+                        axi_araddr  <= araddr_in;
+                        axi_arlen   <= arlen_in; 
+                        axi_arsize  <= arsize_in;
+                        axi_arburst <= arburst_in;
+                    end
+                    else begin
+                        axi_arvalid <= 1'b0;
+                        ar_state <= WAIT;
+                    end
+                end
+            
+            ASSERT:
+                    if (~r_active) begin
+                        axi_arready <= 1'b1;
+                        ar_state <= COMMIT;
+                    end
+        endcase
+    end
+end
+// -----------------//
+//  R Channel FSM  //
+// -----------------//
+
+// internal states
+reg [1:0] r_state;
+
+always @(posedge axi_aclk)
+begin
+    if(rst) begin
+        axi_rvalid <= 1'b0;
+        r_state <= WAIT;
+    end
+    else begin
+        case(r_state)
+            WAIT: // valid == 0
+                if (r_active) begin
+                    if(rvalid_in && rready_in) begin
+                        axi_rvalid <= 1'b1;
+                        axi_rready <= 1'b1;
+                        axi_rdata  <= rdata_in;
+                        r_state <= COMMIT;
+                    end
+                    else if(rvalid_in) begin
+                        axi_rvalid <= 1'b1;
+                        axi_rready <= 1'b0;
+                        axi_rdata  <= rdata_in;
+                        r_state <= ASSERT;
+                    end
+                    else
+                        axi_rready <= rready_in;
+                end
+                else if(rvalid_in) begin
+                    axi_rvalid <= 1'b1;
+                    axi_rdata  <= rdata_in;
+                    r_state <= ASSERT;
+                end
+            COMMIT: // ready && valid == 1
+                begin
+                   if(rvalid_in && rready_in) begin
+                        axi_rdata  <= rdata_in;
+                    end
+                    else if(rvalid_in) begin
+                        axi_rready <= 1'b0;
+                        axi_rdata  <= rdata_in;
+                        r_state <= ASSERT;
+                    end
+                    else begin
+                        axi_rready <= rready_in;
+                        axi_rvalid <= 1'b0;
+                        r_state <= WAIT;
+                    end
+                    if (axi_rlast == 1'b1) begin
+                        axi_rready <= 1'b0;
+                        if (rvalid_in) begin
+                            r_state <= ASSERT;
+                            axi_rvalid <= 1'b1;
+                            axi_rdata  <= rdata_in;
+                        end
+                        else begin 
+                            r_state <= WAIT;
+                            axi_rvalid <= 1'b0;
+                        end
+                    end
+                end
+            ASSERT: // valid == 1 && ready == 0
+                if (r_active && rready_in) begin
+                    r_state <= COMMIT;
+                    axi_rready <= 1'b1;
+                end
         endcase
     end
 end
