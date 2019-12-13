@@ -454,7 +454,7 @@ begin
             COMMIT: // ready && valid == 1 
                 if (axi_rlast == 1'b1) begin
                     axi_rvalid <= 1'b0;
-                    axi_ready <= rready_in;
+                    axi_rready <= rready_in;
                     r_state <= WAIT;
                 end
 
