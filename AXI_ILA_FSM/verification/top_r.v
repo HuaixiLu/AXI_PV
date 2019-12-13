@@ -67,7 +67,7 @@ EmeshAxiMasterBridge_read m_r(
     .__ILA_EmeshAxiMasterBridge_read_decode_of_R_Master_Wait__(),
     .__ILA_EmeshAxiMasterBridge_read_valid__(),
 
-    .m_axi_arid,
+    .m_axi_arid(),
     .m_axi_araddr   (axi_araddr),
     .m_axi_arlen    (axi_arlen),
     .m_axi_arsize   (axi_arsize),
