@@ -448,11 +448,17 @@ begin
                         r_state <= ASSERT;
                     end
                 end
-
+                
                 else
                     axi_rready <= rready_in;
-            COMMIT: // ready && valid == 1
-                begin
+            COMMIT: // ready && valid == 1 
+                if (axi_rlast == 1'b1) begin
+                    axi_rvalid <= 1'b0;
+                    axi_ready <= rready_in;
+                    r_state <= WAIT;
+                end
+
+                else begin
                    if(rvalid_in && rready_in) begin
                         axi_rdata  <= rdata_in;
                     end
@@ -466,16 +472,7 @@ begin
                         axi_rvalid <= 1'b0;
                         r_state <= WAIT;
                     end
-
-                    if (rvalid_in) begin
-                        r_state <= ASSERT;
-                        axi_rvalid <= 1'b1;
-                        axi_rdata  <= rdata_in;
-                    end
-                    else begin 
-                        r_state <= WAIT;
-                        axi_rvalid <= 1'b0;
-                    end
+                   
                 end
             ASSERT: // valid == 1 && ready == 0
                 if (r_active && rready_in) begin
