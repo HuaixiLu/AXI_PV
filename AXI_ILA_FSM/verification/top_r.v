@@ -31,7 +31,7 @@ module Read_Channel #(parameter IDW =  12, // ID
    );
                         
 EmeshAxiMasterBridge_read m_r(
-    .__ILA_EmeshAxiMasterBridge_read_grant__(6'b111111),
+    .__ILA_EmeshAxiMasterBridge_read_grant__(5'b11111),
     .araddr     (araddr_in),
     .arburst    (arburst_in),
     .arlen      (arlen_in),
@@ -45,14 +45,10 @@ EmeshAxiMasterBridge_read m_r(
     .m_axi_rresp        (),
     .m_axi_rvalid       (axi_rvalid),
 
-    .nondet_unknown12_n25(),
-    .nondet_unknown13_n33(),
-    .nondet_unknown14_n41(),
-    .nondet_unknown15_n49(),
-    .nondet_unknown16_n29(),
-    .nondet_unknown17_n37(),
-    .nondet_unknown18_n45(),
-    .nondet_unknown19_n53(),
+    .nondet_unknown12_n20(),
+    .nondet_unknown13_n24(),
+    .nondet_unknown14_n28(),
+    .nondet_unknown15_n32(),
     
     .read_ready(rready_in),
     .read_valid(arvalid_in),
@@ -62,7 +58,6 @@ EmeshAxiMasterBridge_read m_r(
     .__ILA_EmeshAxiMasterBridge_read_decode_of_AR_Master_Asserted__(),
     .__ILA_EmeshAxiMasterBridge_read_decode_of_AR_Master_Commit__(),
     .__ILA_EmeshAxiMasterBridge_read_decode_of_AR_Master_Prepare__(),
-    .__ILA_EmeshAxiMasterBridge_read_decode_of_R_Master_Busy__(),
     .__ILA_EmeshAxiMasterBridge_read_decode_of_R_Master_Reset__(),
     .__ILA_EmeshAxiMasterBridge_read_decode_of_R_Master_Wait__(),
     .__ILA_EmeshAxiMasterBridge_read_valid__(),
@@ -77,9 +72,7 @@ EmeshAxiMasterBridge_read m_r(
     .m_axi_arprot (),
     .m_axi_arqos  (),
     .m_axi_arvalid  (axi_arvalid),
-    .m_axi_rready   (axi_rready),
-    .tx_ractive     (),
-    .tx_arlen   ()
+    .m_axi_rready   (axi_rready)
 );
 
 EmeshAxiSlaveBridge_read s_r(
