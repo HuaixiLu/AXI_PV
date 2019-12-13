@@ -6,13 +6,19 @@
 //#############################################################################
 module axi_protocol (
     axi_aclk,rst,
+
     awaddr_in, awburst_in, awlen_in, awsize_in, awvalid_in,
     axi_awaddr, axi_awlen, axi_awsize, axi_awburst, axi_awvalid, axi_awready,
+
     wdata_in, wstrb_in, wvalid_in, wready_in,
     axi_wdata, axi_wlast, axi_wstrb, axi_wvalid, axi_wready,
+
     bready_in, axi_bresp, axi_bvalid, axi_bready,
 
-    axi_araddr, axi_arlen,axi_arsize, axi_arburst, axi_arvalid, axi_arready, 
+    araddr_in, arburst_in, arlen_in, arsize_in, arvalid_in,
+    axi_araddr, axi_arlen,axi_arsize, axi_arburst, axi_arvalid, axi_arready,
+
+    rdate_in, rvalid_in, rready_in,
     axi_rdata, axi_rresp, axi_rlast, axi_rvalid, axi_rready
 );
 

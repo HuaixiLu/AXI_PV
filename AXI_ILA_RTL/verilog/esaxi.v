@@ -476,7 +476,7 @@ module esaxi (/*autoarg*/
 	begin
          if( rr_return_access ) 
 	   begin
-              s_axi_rvalid <= 1'b1;
+              s_axi_rvalid <= 1'b1; // (valid signal must be asseted after both arready and arvalid signal is asserted!)
               s_axi_rresp  <= rr_timeout_access ? 2'b10 : 2'b00;
             case( axi_arsize[1:0] ) // potential BUG!: rdata should be asserted and stable when valid signal is asserted!
               2'b00:   s_axi_rdata[31:0] <= {4{rr_return_data[7:0]}};  //8-bit
