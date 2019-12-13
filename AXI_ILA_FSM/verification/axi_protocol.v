@@ -307,6 +307,7 @@ begin
                 b_wait <= 1'b0;
                 b_state <= WAIT;
                 axi_bvalid <= 1'b0;
+                axi_bready <= bready_in;
             end
 
             ASSERT:
