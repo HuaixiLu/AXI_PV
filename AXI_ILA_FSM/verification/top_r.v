@@ -26,7 +26,7 @@ module Read_Channel #(parameter IDW =  12, // ID
    output [63 : 0]   axi_rdata,   // slave interface read data.
    output            axi_rlast,   // last transfer in a read burst.
    output            axi_rvalid,  // indicates data is ready to go
-   output            axi_rready,  // master is ready for data
+   output            axi_rready  // master is ready for data
 
    );
                         
