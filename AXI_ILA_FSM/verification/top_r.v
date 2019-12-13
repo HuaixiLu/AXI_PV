@@ -55,7 +55,7 @@ EmeshAxiMasterBridge_read m_r(
     .nondet_unknown19_n53(),
     
     .read_ready(rready_in),
-    .read_valid(rvalid_in),
+    .read_valid(arvalid_in),
     .rst(1'b0),
     
     .__ILA_EmeshAxiMasterBridge_read_acc_decode__(),
