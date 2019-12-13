@@ -224,8 +224,7 @@ ila_r(
     .axi_arvalid (ila_axi_arvalid), 
     .axi_arready (ila_axi_arready),
 
-    .rdata_in (rdata_in), 
-    .rstrb_in (rstrb_in), 
+    .rdata_in (rdata_in),
     .rvalid_in (rvalid_in), 
     .rready_in (rready_in),
     
