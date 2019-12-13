@@ -2,6 +2,9 @@ analyze -sva  \
   emaxi_w.v \
   esaxi_w.v \
   top_w.v \
+  emaxi_r.v \
+  esaxi_r.v \
+  top_r.v \
   axi_protocol.v \
   wrapper.v
 
