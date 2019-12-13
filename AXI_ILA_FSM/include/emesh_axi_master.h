@@ -116,9 +116,6 @@ protected:
   ExprRef tx_bwait;
   ExprRef tx_awlen;
 
-  ExprRef tx_ractive;
-  ExprRef tx_arlen;
-
   //Input
   ExprRef write_addr_valid;
   ExprRef write_valid;

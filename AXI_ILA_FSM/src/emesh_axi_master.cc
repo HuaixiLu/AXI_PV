@@ -82,9 +82,6 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
 
   bready(wmodel.NewBvInput("bready", 1)),
 
-  tx_ractive(rmodel.NewBvState("tx_ractive", 1)),
-  tx_arlen(rmodel.NewBvState("tx_arlen", 8)),
-
   read_valid(rmodel.NewBvInput("read_valid", 1)),
   arlen(rmodel.NewBvInput("arlen", 8)),
   araddr(rmodel.NewBvInput("araddr", 32)),
@@ -206,13 +203,13 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
 
 { // AR_Master_Prepare
     auto instr = rmodel.NewInstr("AR_Master_Prepare");
-    instr.SetDecode( (m_axi_arvalid == 0) & ( m_axi_aresetn_w == 1 ) );
+    instr.SetDecode( (m_axi_arvalid == 0) & (read_valid == 1) & ( m_axi_aresetn_w == 1 ) );
 
-    instr.SetUpdate(m_axi_arvalid, Ite(read_valid == 1, BvConst(1,1), BvConst(0,1)));
-    instr.SetUpdate(m_axi_araddr,  Ite(read_valid == 1, araddr, unknownVal(32)));
-    instr.SetUpdate(m_axi_arlen,   Ite(read_valid == 1, arlen, unknownVal(8)));
-    instr.SetUpdate(m_axi_arsize,  Ite(read_valid == 1, arsize, unknownVal(3)));
-    instr.SetUpdate(m_axi_arburst, Ite(read_valid == 1, arburst, unknownVal(2)));
+    instr.SetUpdate(m_axi_arvalid, BvConst(1,1));
+    instr.SetUpdate(m_axi_araddr,  araddr);
+    instr.SetUpdate(m_axi_arlen,   arlen);
+    instr.SetUpdate(m_axi_arsize,  arsize);
+    instr.SetUpdate(m_axi_arburst, arburst);
   }
 
   { // AR_Mater_Asserted
@@ -230,9 +227,6 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
   { // AR_Master_Commit
     auto instr = rmodel.NewInstr("AR_Master_Commit"); 
     instr.SetDecode( (m_axi_arvalid == 1) & ( m_axi_arready == 1 ) & ( m_axi_aresetn_w == 1 ) );
-    
-    instr.SetUpdate(tx_arlen,   m_axi_arlen);
-    instr.SetUpdate(tx_ractive, BvConst(1,1));
 
     instr.SetUpdate(m_axi_arvalid, Ite(read_valid == 1, BvConst(1,1), BvConst(0,1)));
     instr.SetUpdate(m_axi_araddr,  Ite(read_valid == 1, araddr, unknownVal(32)));
@@ -245,13 +239,6 @@ EmeshAxiMasterBridge::EmeshAxiMasterBridge()
     auto instr = rmodel.NewInstr("R_Master_Wait");
     instr.SetDecode( (m_axi_aresetn_r == 1) );
     instr.SetUpdate(m_axi_rready, read_ready);
-  }
-
-  {
-    auto instr = rmodel.NewInstr("R_Master_Busy");
-    instr.SetDecode( (m_axi_aresetn_r == 1) & (m_axi_rvalid == 1) & (m_axi_rvalid == 1));
-    instr.SetUpdate( tx_arlen,   tx_arlen - BvConst(1,8));
-    instr.SetUpdate( tx_ractive, Ite(tx_arlen == BvConst(1,8), BvConst(0,1), tx_ractive));
   }
 
 }
