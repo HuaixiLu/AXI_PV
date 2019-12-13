@@ -450,11 +450,6 @@ begin
                     else
                         axi_rready <= rready_in;
                 end
-                else if(rvalid_in) begin
-                    axi_rvalid <= 1'b1;
-                    axi_rdata  <= rdata_in;
-                    r_state <= ASSERT;
-                end
             COMMIT: // ready && valid == 1
                 begin
                    if(rvalid_in && rready_in) begin
