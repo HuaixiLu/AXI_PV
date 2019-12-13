@@ -18,7 +18,7 @@ module axi_protocol (
     araddr_in, arburst_in, arlen_in, arsize_in, arvalid_in,
     axi_araddr, axi_arlen,axi_arsize, axi_arburst, axi_arvalid, axi_arready,
 
-    rdate_in, rvalid_in, rready_in,
+    rdata_in, rvalid_in, rready_in,
     axi_rdata, axi_rlast, axi_rvalid, axi_rready
 );
 
