@@ -22,3 +22,6 @@ assert -name bvalid_assert  {(fsm_axi_bvalid  == ila_axi_bvalid)}
 assert -name arready_assert  {(fsm_axi_arready  == ila_axi_arready)}
 assert -name arvalid_assert  {(fsm_axi_arvalid  == ila_axi_arvalid)}
 
+assert -name rready_assert  {(fsm_axi_rready  == ila_axi_rready)}
+assert -name rvalid_assert  {(fsm_axi_rvalid  == ila_axi_rvalid)}
+
