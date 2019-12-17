@@ -434,23 +434,21 @@ begin
     else begin
         case(r_state)
             WAIT: // valid == 0
+            begin
+                axi_rready <= rready_in;
                 if (r_active) begin
                     if(rvalid_in && rready_in) begin
                         axi_rvalid <= 1'b1;
-                        axi_rready <= 1'b1;
                         axi_rdata  <= rdata_in;
                         r_state <= COMMIT;
                     end
                     else if(rvalid_in) begin
                         axi_rvalid <= 1'b1;
-                        axi_rready <= 1'b0;
                         axi_rdata  <= rdata_in;
                         r_state <= ASSERT;
                     end
                 end
-                
-                else
-                    axi_rready <= rready_in;
+            end
             COMMIT: // ready && valid == 1 
                 if (axi_rlast == 1'b1) begin
                     axi_rvalid <= 1'b0;
